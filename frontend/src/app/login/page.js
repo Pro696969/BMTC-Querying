@@ -13,11 +13,11 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md rounded-xl bg-gray-370">
+    <div className="min-h-screen flex items-center justify-center bg-[#15151a]">
+      <Card className="w-full max-w-md rounded-xl bg-black-200">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-black font-bold text-center">Welcome back</CardTitle>
-          <p className="text-sm text-gray-600 text-center">
+          <CardTitle className="text-2xl text-white font-bold text-center">Welcome Back</CardTitle>
+          <p className="text-sm text-gray-400 text-center">
             Please sign in to continue
           </p>
         </CardHeader>
@@ -54,23 +54,23 @@ const LoginPage = () => {
             <div className="flex items-center justify-between">
               <label className="flex items-center space-x-2">
                 <input type="checkbox" className="rounded border-gray-300" />
-                <span className="text-sm text-gray-600">Remember me</span>
+                <span className="text-sm text-gray-400">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-black hover:text-gray-800">
+              <a href="#" className="text-sm text-gray-400 hover:text-gray-500">
                 Forgot password?
               </a>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-black rounded-md text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="w-full bg-black rounded-md text-white py-2 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Sign in
             </button>
 
-            <p className="text-center text-sm text-gray-600">
+            <p className="text-center text-sm text-gray-400">
               Don't have an account?{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-800">
+              <a href="#" className="text-blue-500 hover:text-blue-800">
                 Sign up
               </a>
             </p>
