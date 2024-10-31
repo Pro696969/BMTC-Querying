@@ -2,7 +2,7 @@ import { Bus, Home, Search, Store, Headset } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-function BotNavBar() {
+const BotNavBar = () => {
   return (<div className="bg-black border-gray-200 fixed bottom-0 w-full">
     <div className="flex justify-around p-4">
       <Link href="/">
@@ -33,7 +33,7 @@ function BotNavBar() {
   </div>);
 }
 
-function TopNavBar() {
+const TopNavBar = () => {
   return (
     <nav className="bg-black text-white p-4 flex justify-between items-center shadow-md">
       <Link href="/">

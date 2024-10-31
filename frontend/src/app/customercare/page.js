@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { Phone, Mail, HelpCircle, MessageCircle, ClipboardList } from 'lucide-react';
+import { Phone, HelpCircle, MessageCircle } from 'lucide-react';
 
 const CustomerCarePage = () => {
     const [activeForm, setActiveForm] = useState('feedback');
