@@ -1,8 +1,13 @@
+'use client';
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Bus, Home, Search, Store } from "lucide-react";
+import { useRouter } from 'next/navigation';
+
 
 const HomePage = () => {
+  const router = useRouter();
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
@@ -12,7 +17,7 @@ const HomePage = () => {
           <span className="text-xl font-bold">BusQuery</span>
         </div>
         <div className="flex gap-4">
-          <Button variant="ghost" className="text-white hover:bg-blue-700">
+          <Button variant="ghost" className="text-white hover:bg-blue-700" onClick={() => router.push("/login") }>
             Login
           </Button>
           <Button className="bg-white text-blue-600 hover:bg-gray-100">
