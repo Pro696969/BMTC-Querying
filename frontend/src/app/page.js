@@ -30,7 +30,7 @@ const HomePage = () => {
       <main className="flex-1 flex flex-col items-center justify-center p-4 bg-[#15151a]">
         <div className="text-center space-y-6 max-w-2xl">
           <h1 className="text-4xl font-bold text-gray-100">
-            Find Your Bus Route
+            Find Your <span className="text-blue-500">Bus</span> Route
           </h1>
           <p className="text-lg text-gray-400">
             Real-time bus tracking and route information at your fingertips
