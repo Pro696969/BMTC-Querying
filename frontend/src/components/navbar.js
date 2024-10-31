@@ -23,7 +23,7 @@ function BotNavBar() {
           <span className="text-sm">About Us</span>
         </button>
       </Link>
-      <Link href="/">
+      <Link href="/customercare">
         <button className="flex flex-col items-center text-gray-200 hover:text-blue-400">
           <Headset className="h-6 w-6" />
           <span className="text-sm">Customer Care</span>
