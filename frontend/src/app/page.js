@@ -54,7 +54,7 @@ const HomePage = () => {
           </button>
           <button className="flex flex-col items-center text-gray-600 hover:text-blue-600">
             <Store className="h-6 w-6" />
-            <span className="text-sm">About Us</span>
+            <span className="text-sm" onClick={() => { router.push("/aboutus") }}>About Us</span>
           </button>
         </div>
       </div>
