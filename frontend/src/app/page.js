@@ -1,17 +1,13 @@
-// function Home() {
-//     return (
-//         <h1 className="text-2xl text-white font-bold text-center">Hello World</h1>
-//     )
-// }
-
-// export default Home;
-
+'use client';
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Bus, Home, Search, User } from "lucide-react";
+import { Bus, Home, Search, Store } from "lucide-react";
+import { useRouter } from 'next/navigation';
+
 
 const HomePage = () => {
+  const router = useRouter();
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
@@ -21,7 +17,7 @@ const HomePage = () => {
           <span className="text-xl font-bold">BusQuery</span>
         </div>
         <div className="flex gap-4">
-          <Button variant="ghost" className="text-white hover:bg-black-700">
+          <Button variant="ghost" className="text-white hover:bg-blue-700" onClick={() => router.push("/login") }>
             Login
           </Button>
           <Button className="bg-white text-blue-600 hover:bg-gray-100">
@@ -39,7 +35,7 @@ const HomePage = () => {
           <p className="text-lg text-gray-600">
             Real-time bus tracking and route information at your fingertips
           </p>
-          <Button className="rounded-lg bg-black hover:bg-black-700 text-lg px-8 py-6 h-auto">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-lg p-5 h-auto border rounded-xl">
             Start Searching
           </Button>
         </div>
@@ -57,8 +53,8 @@ const HomePage = () => {
             <span className="text-sm">Search</span>
           </button>
           <button className="flex flex-col items-center text-gray-600 hover:text-blue-600">
-            <User className="h-6 w-6" />
-            <span className="text-sm">Profile</span>
+            <Store className="h-6 w-6" />
+            <span className="text-sm">About Us</span>
           </button>
         </div>
       </div>
