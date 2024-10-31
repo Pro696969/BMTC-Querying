@@ -1,15 +1,6 @@
-// function Home() {
-//     return (
-//         <h1 className="text-2xl text-white font-bold text-center">Hello World</h1>
-//     )
-// }
-
-// export default Home;
-
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Bus, Home, Search, User } from "lucide-react";
+import { Bus, Home, Search, Store } from "lucide-react";
 
 const HomePage = () => {
   return (
@@ -39,7 +30,7 @@ const HomePage = () => {
           <p className="text-lg text-gray-600">
             Real-time bus tracking and route information at your fingertips
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6 h-auto border rounded-lg">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-lg p-5 h-auto border rounded-xl">
             Start Searching
           </Button>
         </div>
@@ -57,8 +48,8 @@ const HomePage = () => {
             <span className="text-sm">Search</span>
           </button>
           <button className="flex flex-col items-center text-gray-600 hover:text-blue-600">
-            <User className="h-6 w-6" />
-            <span className="text-sm">Profile</span>
+            <Store className="h-6 w-6" />
+            <span className="text-sm">About Us</span>
           </button>
         </div>
       </div>
