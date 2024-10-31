@@ -60,12 +60,12 @@ const CustomerCarePage = () => {
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="bg-[#282c35] p-4 rounded-xl">
                             <h3 className="font-bold text-lg mb-2">Customer Support Helpline</h3>
-                            <p className="text-gray-300">+91-80-BMTC-HELP (2684-4357)</p>
-                            <p className="text-gray-400">Operating Hours: 7 AM - 10 PM, Daily</p>
+                            <p className="text-gray-300">080-22952522</p>
+                            <p className="text-gray-400">Operating Hours: 11 AM - 2 PM, Monday-Friday</p>
                         </div>
                         <div className="bg-[#282c35] p-4 rounded-xl">
                             <h3 className="font-bold text-lg mb-2">Email Support</h3>
-                            <p className="text-gray-300">customer.support@bmtc.in</p>
+                            <p className="text-gray-300">complaints@mybmtc.com</p>
                             <p className="text-gray-400">Response within 24-48 hours</p>
                         </div>
                     </div>
