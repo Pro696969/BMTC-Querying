@@ -15,13 +15,13 @@ const HomePage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
-      <nav className="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
+      <nav className="bg-black  -600 text-white p-4 flex justify-between items-center shadow-md">
         <div className="flex items-center gap-2">
           <Bus className="h-6 w-6" />
           <span className="text-xl font-bold">BusQuery</span>
         </div>
         <div className="flex gap-4">
-          <Button variant="ghost" className="text-white hover:bg-blue-700">
+          <Button variant="ghost" className="text-white hover:bg-black-700">
             Login
           </Button>
           <Button className="bg-white text-blue-600 hover:bg-gray-100">
@@ -39,7 +39,7 @@ const HomePage = () => {
           <p className="text-lg text-gray-600">
             Real-time bus tracking and route information at your fingertips
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6 h-auto border rounded-lg">
+          <Button className="rounded-lg bg-black hover:bg-black-700 text-lg px-8 py-6 h-auto">
             Start Searching
           </Button>
         </div>
