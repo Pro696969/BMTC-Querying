@@ -17,10 +17,10 @@ const HomePage = () => {
           <span className="text-xl font-bold">BusQuery</span>
         </div>
         <div className="flex gap-4">
-          <Button variant="ghost" className="text-white hover:bg-blue-700" onClick={() => router.push("/login") }>
+          <Button variant="ghost" className="bg-white text-black hover:bg-gray-100 rounded-xl" onClick={() => router.push("/login") }>
             Login
           </Button>
-          <Button className="bg-white text-blue-600 hover:bg-gray-100">
+          <Button className="bg-white text-black hover:bg-gray-100 rounded-xl">
             Sign Up
           </Button>
         </div>
@@ -35,7 +35,7 @@ const HomePage = () => {
           <p className="text-lg text-gray-600">
             Real-time bus tracking and route information at your fingertips
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-lg p-5 h-auto border rounded-xl">
+          <Button className="bg-black text-lg p-5 h-auto border rounded-xl">
             Start Searching
           </Button>
         </div>
@@ -44,15 +44,15 @@ const HomePage = () => {
       {/* Bottom Navigation Bar */}
       <div className="bg-white border-t border-gray-200 fixed bottom-0 w-full">
         <div className="flex justify-around p-4">
-          <button className="flex flex-col items-center text-gray-600 hover:text-blue-600">
+          <button className="flex flex-col items-center text-gray-800 hover:text-blue-600">
             <Home className="h-6 w-6" />
             <span className="text-sm">Home</span>
           </button>
-          <button className="flex flex-col items-center text-gray-600 hover:text-blue-600">
+          <button className="flex flex-col items-center text-gray-800 hover:text-blue-600">
             <Search className="h-6 w-6" />
             <span className="text-sm">Search</span>
           </button>
-          <button className="flex flex-col items-center text-gray-600 hover:text-blue-600">
+          <button className="flex flex-col items-center text-gray-800 hover:text-blue-600">
             <Store className="h-6 w-6" />
             <span className="text-sm" onClick={() => { router.push("/aboutus") }}>About Us</span>
           </button>

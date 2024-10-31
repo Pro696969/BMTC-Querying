@@ -14,7 +14,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md rounded-xl bg-gray-370">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-black font-bold text-center">Welcome back</CardTitle>
           <p className="text-sm text-gray-600 text-center">
@@ -56,14 +56,14 @@ const LoginPage = () => {
                 <input type="checkbox" className="rounded border-gray-300" />
                 <span className="text-sm text-gray-600">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-800">
+              <a href="#" className="text-sm text-black hover:text-gray-800">
                 Forgot password?
               </a>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="w-full bg-black rounded-md text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Sign in
             </button>
