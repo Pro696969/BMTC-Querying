@@ -1,4 +1,4 @@
-import { Bus, Home, Search, Store } from "lucide-react";
+import { Bus, Home, Search, Store, Headset } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -23,6 +23,12 @@ function BotNavBar() {
           <span className="text-sm">About Us</span>
         </button>
       </Link>
+      <Link href="/">
+        <button className="flex flex-col items-center text-gray-200 hover:text-blue-400">
+          <Headset className="h-6 w-6" />
+          <span className="text-sm">Customer Care</span>
+        </button>
+      </Link>
     </div>
   </div>);
 }
@@ -37,13 +43,15 @@ function TopNavBar() {
         </div>
       </Link>
       <div className="flex gap-4">
-        <Link href="/login">
-          <Button variant="ghost" className="bg-white text-black hover:bg-gray-100 rounded-xl">
-            Login
-          </Button>
-        </Link>
-        <Button className="bg-white text-black hover:bg-gray-100 rounded-xl">
-          Sign Up
+        <Button className="bg-white font-semibold text-black hover:bg-gray-100 rounded-xl" asChild>
+          <Link href="/login">
+          Login
+          </Link>
+        </Button>
+        <Button className="bg-white font-semibold text-black hover:bg-gray-100 rounded-xl" asChild>
+          <Link href="/signup">
+            Sign Up
+          </Link>
         </Button>
       </div>
     </nav>);
