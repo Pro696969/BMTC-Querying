@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import json
+import sqlite3
 
 app = FastAPI()
 
@@ -21,6 +23,7 @@ db = {
     "hello": "world",
 }
 
+bus_routes = json.load(open("bus_routes.json"))
 
 @app.post("/login")
 def login_user(creds: User) -> JSONResponse:
@@ -33,3 +36,8 @@ def login_user(creds: User) -> JSONResponse:
 def signin_user(creds: User) -> JSONResponse:
     db[creds.username] = creds.password
     return JSONResponse({"message": "Successfully registered"})
+
+
+@app.get("/route/{category}/{query}")
+def get_route(category: str, query: str) -> JSONResponse:
+    return JSONResponse(bus_routes)
