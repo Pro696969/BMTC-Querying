@@ -1,12 +1,17 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Lock, Mail } from 'lucide-react';
+import { Lock, Mail, User } from 'lucide-react';
+import { useRouter } from 'next/navigation'
+import { UserCredentials } from '../page';
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('');
+  // const [username, setUsernamestr] = useState('');
+  const { username, setUsername } = useContext(UserCredentials);
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('')
+
+  const router = useRouter()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,6 +22,11 @@ const LoginPage = () => {
       },
       body: JSON.stringify({ username, password }),
     }).then((res) => res.json()).then((data) => {
+      if (data.logged === "1") {
+        setUsername(username)
+        router.push('/')
+        console.log("well done")
+      }
       setMessage(data.message)
     })
   };
@@ -36,6 +46,7 @@ const LoginPage = () => {
               <div className="relative">
                 <Mail className="absolute left-3 top-4 h-5 w-5 text-gray-200" />
                 <input
+                  type="text"
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -61,8 +72,7 @@ const LoginPage = () => {
 
             <div className="text-white py-2 hover:text-gray-500 font-semibold border-white border-2 rounded-xl">
               <button
-                // type="submit"
-                onClick={handleSubmit}
+                type="submit"
                 className="px-4"
               >
                 Login

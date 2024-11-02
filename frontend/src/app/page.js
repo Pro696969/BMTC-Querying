@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
@@ -10,9 +10,11 @@ import TypeIt from 'typeit-react';
 import { createContext } from 'react';
 
 export const UserCredentials = createContext({username: '', setUsername: null});
+// export const UserCredentials = createContext();
 
 const HomePage = () => {
   let [username, setUsername] = useState('');
+  
   return (
     <UserCredentials.Provider value={{username, setUsername}}>
       <div className="h-screen">

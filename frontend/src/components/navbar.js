@@ -1,4 +1,5 @@
-import { Bus, Home, Search, Store, Headset, CircleUserRound } from "lucide-react";
+"use client"
+import { Bus, Home, Store, Headset, CircleUserRound } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { UserCredentials } from "@/app/page";
@@ -58,6 +59,8 @@ const LoggedIn = ({ username }) => {
 
 const TopNavBar = () => {
   const { username } = useContext(UserCredentials);
+  // const [username, setUsername] = useContext(UserCredentials);
+  console.log(username)
   let loginItems;
   if (username) {
     loginItems = <LoggedIn username={username} />
