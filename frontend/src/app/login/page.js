@@ -17,22 +17,8 @@ const LoginPage = () => {
       },
       body: JSON.stringify({ username, password }),
     }).then((res) => res.json()).then((data) => {
-      if (data) {
-        setMessage(data.message)
-      }
-      else {
-        setMessage("Login Failed: ", data.message)
-      }
+      setMessage(data.message)
     })
-
-    // const data = res.json()
-    // if (res.ok) {
-    //   setMessage(data.message)
-    // }
-    // else {
-    //   setMessage("Login Failed: ", data.message)
-    // }
-    // console.log('Login attempted with:', { username, password });
   };
 
   return (

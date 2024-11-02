@@ -1,8 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import TypeIt from "typeit-react"
+import { UserCredentials } from "@/app/page"
+import { redirect } from "next/navigation"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,6 +51,11 @@ const Routes = ({ routes }) => {
 export default function BusSearch() {
   const [searchResults, setSearchResults] = useState('')
   const [chosen, setChosen] = useState('-')
+  const { username } = useContext(UserCredentials);
+
+  if (!username) {
+    redirect("/login");
+  }
 
   const handleSearch = (event) => {
     const { value } = event.target
