@@ -1,6 +1,8 @@
 import { Bus, Home, Search, Store, Headset } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { UserCredentials } from "@/app/page";
+import { useContext } from "react";
 
 const BotNavBar = () => {
   return (<div className="bg-black border-gray-200 fixed bottom-0 w-full">
@@ -33,7 +35,40 @@ const BotNavBar = () => {
   </div>);
 }
 
+const NotLoggedIn = () => {
+  return <div className="flex gap-4">
+    <Button className="bg-white font-semibold text-black hover:bg-gray-100 rounded-xl" asChild>
+      <Link href="/login">
+        Login
+      </Link>
+    </Button>
+    <Button className="bg-white font-semibold text-black hover:bg-gray-100 rounded-xl" asChild>
+      <Link href="/signup">
+        Sign Up
+      </Link>
+    </Button>
+  </div>
+}
+
+const LoggedIn = ({username}) => {
+  return <div className="flex gap-4">
+    <div className="bg-white p-1.5 font-semibold text-black rounded-xl">
+      {username}
+    </div>
+    <div className="bg-white p-1.5 font-semibold text-black rounded-xl">
+      Profile
+    </div>
+  </div>
+}
+
 const TopNavBar = () => {
+  const { username } = useContext(UserCredentials);
+  let loginItems;
+  if(username) {
+    loginItems = <LoggedIn username={username}/>
+  } else {
+    loginItems = <NotLoggedIn />
+  }
   return (
     <nav className="bg-black text-white p-4 flex justify-between items-center shadow-md">
       <Link href="/">
@@ -42,18 +77,7 @@ const TopNavBar = () => {
           <span className="text-xl font-bold">BMTC Query</span>
         </div>
       </Link>
-      <div className="flex gap-4">
-        <Button className="bg-white font-semibold text-black hover:bg-gray-100 rounded-xl" asChild>
-          <Link href="/login">
-          Login
-          </Link>
-        </Button>
-        <Button className="bg-white font-semibold text-black hover:bg-gray-100 rounded-xl" asChild>
-          <Link href="/signup">
-            Sign Up
-          </Link>
-        </Button>
-      </div>
+      {loginItems}
     </nav>);
 }
 
