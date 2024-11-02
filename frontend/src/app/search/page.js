@@ -33,7 +33,7 @@ const Routes = ({ routes }) => {
       <TableBody>
         {routes.map((route, index) => (
           <TableRow
-            key={route.id}
+            key={index}
             className={`border-t border-gray-700 hover:bg-[#1c1c24] ${index === routes.length - 1 ? '' : 'border-b border-gray-700'
               }`}
           >
