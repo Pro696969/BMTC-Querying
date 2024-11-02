@@ -6,10 +6,33 @@ import { Lock, Mail } from 'lucide-react';
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login attempted with:', { username, password });
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    }).then((res) => res.json()).then((data) => {
+      if (data) {
+        setMessage(data.message)
+      }
+      else {
+        setMessage("Login Failed: ", data.message)
+      }
+    })
+
+    // const data = res.json()
+    // if (res.ok) {
+    //   setMessage(data.message)
+    // }
+    // else {
+    //   setMessage("Login Failed: ", data.message)
+    // }
+    // console.log('Login attempted with:', { username, password });
   };
 
   return (
@@ -52,13 +75,14 @@ const LoginPage = () => {
 
             <div className="text-white py-2 hover:text-gray-500 font-semibold border-white border-2 rounded-xl">
               <button
-                type="submit"
+                // type="submit"
+                onClick={handleSubmit}
                 className="px-4"
               >
-                Sign in
+                Login
               </button>
             </div>
-
+            {message && <p className="text-white mt-4">{message}</p>}
           </form>
         </CardContent>
       </Card>

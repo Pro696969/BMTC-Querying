@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+# from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -17,6 +18,7 @@ db = {
 @app.post("/login")
 def login_user(creds: User) -> JSONResponse:
     if creds.username in db and db[creds.username] == creds.password:
+        print("authed")
         return JSONResponse({"message": "Authenticated!"})
     return JSONResponse({"message": "Wrong Username or Password"}, status_code=401)
 
