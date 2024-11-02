@@ -29,8 +29,8 @@ bus_routes = json.load(open("bus_routes.json"))
 def login_user(creds: User) -> JSONResponse:
     if creds.username in db and db[creds.username] == creds.password:
         print("authed")
-        return JSONResponse({"message": "Authenticated!"})
-    return JSONResponse({"message": "Wrong Username or Password"}, status_code=401)
+        return JSONResponse({"logged": "1", "message": "Authenticated!"})
+    return JSONResponse({"logged": "0", "message": "Wrong Username or Password"}, status_code=401)
 
 @app.post("/signin")
 def signin_user(creds: User) -> JSONResponse:
