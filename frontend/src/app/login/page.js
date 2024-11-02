@@ -10,7 +10,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+    fetch(`http://localhost:8000/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
