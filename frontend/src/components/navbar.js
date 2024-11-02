@@ -1,4 +1,4 @@
-import { Bus, Home, Search, Store, Headset } from "lucide-react";
+import { Bus, Home, Search, Store, Headset, CircleUserRound } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { UserCredentials } from "@/app/page";
@@ -13,22 +13,22 @@ const BotNavBar = () => {
           <span className="text-sm">Home</span>
         </button>
       </Link >
-      <Link href="/search">
+      <Link href="/profile">
         <button className="flex flex-col items-center text-gray-200 hover:text-blue-400">
-          <Search className="h-6 w-6" />
-          <span className="text-sm">Search</span>
-        </button>
-      </Link>
-      <Link href="/aboutus">
-        <button className="flex flex-col items-center text-gray-200 hover:text-blue-400">
-          <Store className="h-6 w-6" />
-          <span className="text-sm">About Us</span>
+          <CircleUserRound className="h-6 w-6" />
+          <span className="text-sm">Profile</span>
         </button>
       </Link>
       <Link href="/customercare">
         <button className="flex flex-col items-center text-gray-200 hover:text-blue-400">
           <Headset className="h-6 w-6" />
           <span className="text-sm">Customer Care</span>
+        </button>
+      </Link>
+      <Link href="/aboutus">
+        <button className="flex flex-col items-center text-gray-200 hover:text-blue-400">
+          <Store className="h-6 w-6" />
+          <span className="text-sm">About Us</span>
         </button>
       </Link>
     </div>
@@ -50,22 +50,17 @@ const NotLoggedIn = () => {
   </div>
 }
 
-const LoggedIn = ({username}) => {
-  return <div className="flex gap-4">
-    <div className="bg-white p-1.5 font-semibold text-black rounded-xl">
-      {username}
-    </div>
-    <div className="bg-white p-1.5 font-semibold text-black rounded-xl">
-      Profile
-    </div>
+const LoggedIn = ({ username }) => {
+  return <div>
+    Hello {username}!
   </div>
 }
 
 const TopNavBar = () => {
   const { username } = useContext(UserCredentials);
   let loginItems;
-  if(username) {
-    loginItems = <LoggedIn username={username}/>
+  if (username) {
+    loginItems = <LoggedIn username={username} />
   } else {
     loginItems = <NotLoggedIn />
   }
