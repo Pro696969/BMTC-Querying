@@ -15,7 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 class User(BaseModel):
-    username: str
+    inputUsername: str
     password: str
 
 db = {
@@ -27,7 +27,7 @@ bus_routes = json.load(open("bus_routes.json"))
 
 @app.post("/login")
 def login_user(creds: User) -> JSONResponse:
-    if creds.username in db and db[creds.username] == creds.password:
+    if creds.inputUsername in db and db[creds.inputUsername] == creds.password:
         print("authed")
         return JSONResponse({"logged": "1", "message": "Authenticated!"})
     return JSONResponse({"logged": "0", "message": "Wrong Username or Password"}, status_code=401)
