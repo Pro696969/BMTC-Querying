@@ -2,8 +2,8 @@
 import { Bus, Home, Store, Headset, CircleUserRound } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { UserCredentials } from "@/app/page";
 import { useContext } from "react";
+import { UserCredentials } from "@/app/usercontext/UserCredentialsProvider";
 
 const BotNavBar = () => {
   return (<div className="bg-black border-gray-200 fixed bottom-0 w-full">
@@ -58,9 +58,8 @@ const LoggedIn = ({ username }) => {
 }
 
 const TopNavBar = () => {
+  // const { username } = useContext(UserCredentials);
   const { username } = useContext(UserCredentials);
-  // const [username, setUsername] = useContext(UserCredentials);
-  console.log(username)
   let loginItems;
   if (username) {
     loginItems = <LoggedIn username={username} />

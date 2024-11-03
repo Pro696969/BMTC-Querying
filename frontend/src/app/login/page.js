@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation'
 import { UserCredentials } from '../page';
 
 const LoginPage = () => {
-  // const [username, setUsernamestr] = useState('');
-  const { username, setUsername } = useContext(UserCredentials);
+  const { setUsername } = useContext(UserCredentials);
+  const [inputUsername, setInputUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('')
 
@@ -20,10 +20,10 @@ const LoginPage = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ inputUsername, password }),
     }).then((res) => res.json()).then((data) => {
       if (data.logged === "1") {
-        setUsername(username)
+        setUsername(inputUsername)
         router.push('/')
         console.log("well done")
       }
@@ -41,15 +41,15 @@ const LoginPage = () => {
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4 flex flex-col items-center">
+          <form className="space-y-4 flex flex-col items-center" onSubmit={handleSubmit}>
             <div className="space-y-2 w-full">
               <div className="relative">
                 <Mail className="absolute left-3 top-4 h-5 w-5 text-gray-200" />
                 <input
                   type="text"
                   placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={inputUsername}
+                  onChange={(e) => setInputUsername(e.target.value)}
                   className="bg-black w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />

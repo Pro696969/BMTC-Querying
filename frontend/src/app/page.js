@@ -1,22 +1,17 @@
 "use client";
-
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { BotNavBar } from '@/components/navbar';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import TypeIt from 'typeit-react';
-import { createContext } from 'react';
-
-export const UserCredentials = createContext({username: '', setUsername: null});
-// export const UserCredentials = createContext();
+import { UserCredentials } from './usercontext/UserCredentialsProvider';
 
 const HomePage = () => {
-  let [username, setUsername] = useState('');
-  
+  const { username, setUsername } = useContext(UserCredentials)
+
   return (
-    <UserCredentials.Provider value={{username, setUsername}}>
       <div className="h-screen">
         <motion.div
           animate={{
@@ -62,7 +57,6 @@ const HomePage = () => {
           <BotNavBar />
         </main>
       </div>
-    </UserCredentials.Provider>
   );
 };
 
