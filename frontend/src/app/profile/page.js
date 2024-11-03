@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -7,11 +7,13 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Bell, Bus, MapPin, Clock, CreditCard } from 'lucide-react'
+import { UserCredentials } from '../usercontext/UserCredentialsProvider'
 
 export default function ProfilePage() {
+  const { username } = useContext(UserCredentials);
   const [user, setUser] = useState({
     user_id: "BMTC123456",
-    user_name: "John Doe",
+    user_name: "",
     user_start_stop: "Majestic",
     user_end_stop: "Whitefield",
     email: "john.doe@example.com",
@@ -30,6 +32,12 @@ export default function ProfilePage() {
       remainingDays: 15,
     },
   })
+  useEffect(() => {
+    setUser(user => ({
+      ...user,
+      user_name: username
+    }))
+  }, [username])
 
   const handleNotificationToggle = () => {
     setUser(prevUser => ({ ...prevUser, notifications: !prevUser.notifications }))

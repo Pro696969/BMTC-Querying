@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Lock, Mail, User } from 'lucide-react';
 import { useRouter } from 'next/navigation'
-import { UserCredentials } from '../page';
+import { UserCredentials } from '../usercontext/UserCredentialsProvider';
 
 const LoginPage = () => {
   const { setUsername } = useContext(UserCredentials);
