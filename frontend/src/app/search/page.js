@@ -3,7 +3,6 @@ import { useState, useContext } from 'react'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import TypeIt from "typeit-react"
-import { UserCredentials } from "@/app/page"
 import { redirect } from "next/navigation"
 import {
   DropdownMenu,
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { UserCredentials } from '../usercontext/UserCredentialsProvider'
 
 
 const Routes = ({ routes }) => {
