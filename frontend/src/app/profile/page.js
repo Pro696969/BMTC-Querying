@@ -13,7 +13,7 @@ export default function ProfilePage() {
   const { username } = useContext(UserCredentials);
   const [user, setUser] = useState({
     user_id: "BMTC123456",
-    user_name: "",
+    user_name: username,
     user_start_stop: "Majestic",
     user_end_stop: "Whitefield",
     email: "john.doe@example.com",
@@ -32,12 +32,12 @@ export default function ProfilePage() {
       remainingDays: 15,
     },
   })
-  useEffect(() => {
-    setUser(user => ({
-      ...user,
-      user_name: username
-    }))
-  }, [username])
+  // useEffect(() => {
+  //   setUser(user => ({
+  //     ...user,
+  //     user_name: username
+  //   }))
+  // }, [username])
 
   // const handleNotificationToggle = () => {
   //   setUser(prevUser => ({ ...prevUser, notifications: !prevUser.notifications }))
