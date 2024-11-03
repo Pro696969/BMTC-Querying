@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Bell, Bus, MapPin, Clock, CreditCard } from 'lucide-react'
-import { UserCredentials } from '../usercontext/UserCredentialsProvider'
+import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
 
 export default function ProfilePage() {
   const { username } = useContext(UserCredentials);
@@ -39,15 +39,15 @@ export default function ProfilePage() {
     }))
   }, [username])
 
-  const handleNotificationToggle = () => {
-    setUser(prevUser => ({ ...prevUser, notifications: !prevUser.notifications }))
-  }
+  // const handleNotificationToggle = () => {
+  //   setUser(prevUser => ({ ...prevUser, notifications: !prevUser.notifications }))
+  // }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#15151a] text-gray-100 p-8 ">
       <Card className="max-w-4xl mx-auto bg-[#0c0c0f] text-gray-100 rounded-xl">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">My Profile</CardTitle>
+          <CardTitle className="text-2xl font-bold">{username ? `${username}'s Profile` : 'My Profile'}</CardTitle>
           <CardDescription>Manage your account and preferences</CardDescription>
         </CardHeader>
         <CardContent>

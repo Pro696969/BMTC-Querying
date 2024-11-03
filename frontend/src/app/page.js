@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import TypeIt from 'typeit-react';
-import { UserCredentials } from './usercontext/UserCredentialsProvider';
+import { UserCredentials } from '../components/usercontext/UserCredentialsProvider';
 
 const HomePage = () => {
   const { username, setUsername } = useContext(UserCredentials)

@@ -3,7 +3,7 @@ import { Bus, Home, Store, Headset, CircleUserRound } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useContext } from "react";
-import { UserCredentials } from "@/app/usercontext/UserCredentialsProvider";
+import { UserCredentials } from "@/components/usercontext/UserCredentialsProvider";
 
 const BotNavBar = () => {
   return (<div className="bg-black border-gray-200 fixed bottom-0 w-full">
