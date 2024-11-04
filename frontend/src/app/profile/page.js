@@ -10,13 +10,13 @@ import { Bell, Bus, MapPin, Clock, CreditCard } from 'lucide-react'
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
 
 export default function ProfilePage() {
-  const { username } = useContext(UserCredentials);
+  const { username, usermailid } = useContext(UserCredentials);
   const [user, setUser] = useState({
     user_id: "BMTC123456",
     user_name: username,
     user_start_stop: "Majestic",
     user_end_stop: "Whitefield",
-    email: "john.doe@example.com",
+    email: usermailid,
     notifications: true,
     favoriteRoutes: [
       { id: 1, name: "500K", from: "Majestic", to: "Whitefield" },

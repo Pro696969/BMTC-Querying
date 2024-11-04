@@ -1,11 +1,13 @@
 "use client"
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider';
 import Link from 'next/link'
 
 export default function SignUp() {
+    const { setUsermailid } = useContext(UserCredentials);
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -31,15 +33,17 @@ export default function SignUp() {
                 },
                 body: JSON.stringify({
                     inputUsername: formData.username,
-                    password: formData.password
+                    password: formData.password,
+                    emailid: formData.email
                 }),
             })
 
             const data = await response.json()
             if (data.signed === "1") {
+                setUsermailid(formData.email)
                 setMessage(data.message)
             } else {
-                setMessage(data.message) 
+                setMessage(data.message)
             }
         } catch (error) {
             console.error("Error during sign-up:", error)
@@ -71,6 +75,7 @@ export default function SignUp() {
                             name="email"
                             type="email"
                             placeholder="email-id"
+                            value={formData.email}
                             required
                             className="w-full bg-gray-700 text-white border-gray-700 rounded-xl"
                             onChange={handleChange}
