@@ -53,7 +53,7 @@ const NotLoggedIn = () => {
 
 const LoggedIn = ({ username }) => {
   return (
-    <div className="text-xl normal-case text-white-500 hover:text-blue-500 transition duration-300 ease-in-out">
+    <div className="font-medium text-xl normal-case text-white-500 hover:drop-shadow-xl transition duration-300 ease-in-out">
       <span className="hover:animate-pulse">
         Hello, {username}!
       </span>
