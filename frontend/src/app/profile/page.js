@@ -1,17 +1,15 @@
 'use client'
-import { useState, useContext, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
+import { useContext } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Bell, Bus, MapPin, Clock, CreditCard } from 'lucide-react'
+import { Bus, MapPin, Clock } from 'lucide-react'
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
 
 export default function ProfilePage() {
   const { username, usermailid } = useContext(UserCredentials);
-  const [user, setUser] = useState({
+  const user = {
     user_id: "BMTC123456",
     user_name: username,
     user_start_stop: "Majestic",
@@ -31,17 +29,7 @@ export default function ProfilePage() {
       validUntil: "2024-03-31",
       remainingDays: 15,
     },
-  })
-  // useEffect(() => {
-  //   setUser(user => ({
-  //     ...user,
-  //     user_name: username
-  //   }))
-  // }, [username])
-
-  // const handleNotificationToggle = () => {
-  //   setUser(prevUser => ({ ...prevUser, notifications: !prevUser.notifications }))
-  // }
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#15151a] text-gray-100 p-8 ">
@@ -62,7 +50,6 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="user_id">User ID</Label>
-                    
                     <Input id="user_id" value={user.user_id} readOnly className="text-black bg-gray-750 rounded-xl" />
                   </div>
                   <div>
@@ -85,15 +72,8 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  {/* <Switch
-                    id="notifications"
-                    checked={user.notifications}
-                    onCheckedChange={handleNotificationToggle}
-                  /> 
-                  <Label htmlFor="notifications">Enable notifications</Label> */}
                 </div>
               </div>
-              {/* <Button className="w-full mt-4">Save Changes</Button> */}
             </TabsContent>
             <TabsContent value="routes" className="space-y-4">
               <div>
@@ -143,7 +123,6 @@ export default function ProfilePage() {
                   </div>
                 </CardContent>
               </Card>
-              {/* <Button className="w-full">Renew Bus Pass</Button> */}
             </TabsContent>
           </Tabs>
         </CardContent>

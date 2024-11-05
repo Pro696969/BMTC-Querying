@@ -72,7 +72,6 @@ const LoggedIn = ({ username }) => {
 }
 
 const TopNavBar = () => {
-  // const { username } = useContext(UserCredentials);
   const { username } = useContext(UserCredentials);
   let loginItems;
   if (username) {
