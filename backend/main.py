@@ -7,13 +7,13 @@ import sqlite3
 from contextlib import asynccontextmanager
 
 
-# @asynccontextmanager I DONT GET THIS 
-# async def lifespan(app: FastAPI):
-#     startup_db()
-#     yield
-# app = FastAPI(lifespan=lifespan)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    startup_db()
+    yield
 
-app = FastAPI()
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,15 +29,7 @@ class User(BaseModel):
     password: str
 
 
-# dummy db
-# db = {
-#     "kk": "khushi",
-#     "hello": "world",
-# }
-
-
 def startup_db():
-
     conn = sqlite3.connect("project.db")
     cursor = conn.cursor()
 
@@ -48,24 +40,11 @@ def startup_db():
         password TEXT)"""
     )
 
-    # cursor.execute("""SELECT COUNT(*) FROM USERS""")
-    # if cursor.fetchone()[0] == 0:
-    #     cursor.executemany(
-    #         """INSERT INTO USERS (username, password) VALUES (?. ?)""",
-    #         [("kk", "khushi"), ("hello", "world")],
-    #     )
     conn.commit()
     conn.close()
 
 
-# deprecated on_event WORKS!
-@app.on_event("startup")
-def on_startup():
-    startup_db()
-
-
 bus_routes = json.load(open("bus_routes.json"))
-
 
 @app.post("/login")
 def login_user(creds: User) -> JSONResponse:
