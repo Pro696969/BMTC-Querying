@@ -36,7 +36,7 @@ const BotNavBar = () => {
   </div>);
 }
 
-const NotLoggedIn = () => {
+const NotLoggedIn = ( {username} ) => {
   return <div className="flex gap-4">
     <Button className="bg-white font-semibold text-black hover:bg-gray-100 rounded-xl" asChild>
       <Link href="/login">
@@ -51,12 +51,22 @@ const NotLoggedIn = () => {
   </div>
 }
 
+function handleLogOut() {
+  const { setUsername } = useContext(UserCredentials);
+  setUsername('')
+}
+
 const LoggedIn = ({ username }) => {
   return (
-    <div className="font-medium text-xl normal-case text-white-500 hover:drop-shadow-xl transition duration-300 ease-in-out">
-      <span className="hover:animate-pulse">
+    <div className="font-medium text-xl normal-case text-white-500 hover:text-blue-500 transition duration-300 ease-in-out">
+      <span className="mx-4 hover:animate-pulse">
         Hello, {username}!
       </span>
+      <Button onClick={handleLogOut} className="px-2 bg-white font-semibold text-black hover:bg-gray-100 rounded-xl" asChild>
+      <Link href="/">
+        Log Out
+      </Link>
+      </Button>
     </div>
   )
 }
@@ -68,7 +78,7 @@ const TopNavBar = () => {
   if (username) {
     loginItems = <LoggedIn username={username} />
   } else {
-    loginItems = <NotLoggedIn />
+    loginItems = <NotLoggedIn username={username}/>
   }
   return (
     <nav className="bg-black text-white p-4 flex justify-between items-center shadow-md">
