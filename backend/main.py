@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     startup_db()
     yield
 
@@ -27,6 +27,14 @@ app.add_middleware(
 class User(BaseModel):
     inputUsername: str
     password: str
+    emailid: str
+    busstart: str
+    busstop: str
+
+
+class Login_user(BaseModel):
+    inputUsername: str
+    password: str
 
 
 def startup_db():
@@ -34,10 +42,15 @@ def startup_db():
     cursor = conn.cursor()
 
     cursor.execute(
-        """CREATE TABLE IF NOT EXISTS USERS
+        """
+        CREATE TABLE IF NOT EXISTS USERS
         (loginid INTEGER PRIMARY KEY AUTOINCREMENT, 
         username TEXT UNIQUE, 
-        password TEXT)"""
+        password TEXT,
+        emailid TEXT,
+        busstart TEXT,
+        busstop TEXT)
+        """
     )
 
     conn.commit()
@@ -46,8 +59,9 @@ def startup_db():
 
 bus_routes = json.load(open("bus_routes.json"))
 
+
 @app.post("/login")
-def login_user(creds: User) -> JSONResponse:
+def login_user(creds: Login_user) -> JSONResponse:
     conn = sqlite3.connect("project.db")
     cursor = conn.cursor()
 
@@ -56,10 +70,21 @@ def login_user(creds: User) -> JSONResponse:
         (creds.inputUsername, creds.password),
     )
     user = cursor.fetchone()
+    print(user)
+    (1, 'kk', 'khushi', 'RT Nagar', 'Electronic City')
+    # (2, 'Kiran', 'Kiran', 'kiran@gmail.com', 'Whitefield', 'KR Market')
 
     conn.close()
     if user:
-        return JSONResponse({"logged": "1", "message": "Authenticated!"})
+        return JSONResponse(
+            {
+                "logged": "1",
+                "message": "Authenticated!",
+                "emailid": user[3],
+                "busstart": user[4],
+                "busstop": user[5],
+            }
+        )
     else:
         return JSONResponse(
             {"logged": "0", "message": "Wrong Username or Password"}, status_code=401
@@ -72,8 +97,14 @@ def signin_user(creds: User) -> JSONResponse:
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "INSERT INTO USERS (username, password) VALUES (?, ?)",
-            (creds.inputUsername, creds.password),
+            "INSERT INTO USERS (username, password, emailid, busstart, busstop) VALUES (?, ?, ?, ?, ?)",
+            (
+                creds.inputUsername,
+                creds.password,
+                creds.emailid,
+                creds.busstart,
+                creds.busstop,
+            ),
         )
         conn.commit()
         conn.close()
@@ -86,5 +117,5 @@ def signin_user(creds: User) -> JSONResponse:
 
 
 @app.get("/route/{category}/{query}")
-def get_route(category: str, query: str) -> JSONResponse:
+def get_route(_category: str, _query: str) -> JSONResponse:
     return JSONResponse(bus_routes)
