@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider';
 
 const LoginPage = () => {
-  const { setUsername } = useContext(UserCredentials);
+  const { setUsername, setUsermailid, setBusstart, setBusstop } = useContext(UserCredentials);
   const [inputUsername, setInputUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('')
@@ -24,6 +24,9 @@ const LoginPage = () => {
     }).then((res) => res.json()).then((data) => {
       if (data.logged === "1") {
         setUsername(inputUsername)
+        setUsermailid(data.emailid)
+        setBusstart(data.busstart)
+        setBusstop(data.busstop)
         router.push('/')
         console.log("well done")
       }

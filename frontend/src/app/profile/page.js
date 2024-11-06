@@ -8,12 +8,12 @@ import { Bus, MapPin, Clock } from 'lucide-react'
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
 
 export default function ProfilePage() {
-  const { username, usermailid } = useContext(UserCredentials);
+  const { username, usermailid, busstart, busstop} = useContext(UserCredentials);
   const user = {
     user_id: "BMTC123456",
     user_name: username,
-    user_start_stop: "Majestic",
-    user_end_stop: "Whitefield",
+    user_start_stop: busstart,
+    user_end_stop: busstop,
     email: usermailid,
     notifications: true,
     favoriteRoutes: [
