@@ -30,6 +30,7 @@ class User(BaseModel):
     emailid: str
     busstart: str
     busstop: str
+    bdate: str
 
 
 class Login_user(BaseModel):
@@ -49,7 +50,17 @@ def startup_db():
         password TEXT,
         emailid TEXT,
         busstart TEXT,
-        busstop TEXT)
+        busstop TEXT,
+        bdate TEXT)
+        """
+    )
+
+    cursor.execute(
+        """
+        CREATE VIEW IF NOT EXISTS user_age AS
+        SELECT username, password, emailid, busstart, busstop, bdate,
+        (strftime('%Y', 'now') - CAST(bdate AS INTEGER)) AS age
+        FROM USERS
         """
     )
 
@@ -66,23 +77,26 @@ def login_user(creds: Login_user) -> JSONResponse:
     cursor = conn.cursor()
 
     cursor.execute(
-        """SELECT * FROM USERS WHERE username = ? AND Password = ?""",
+        """SELECT username, emailid, busstart, busstop, bdate, age
+        FROM user_age WHERE username = ? AND password = ?""",
         (creds.inputUsername, creds.password),
     )
     user = cursor.fetchone()
     print(user)
-    (1, 'kk', 'khushi', 'RT Nagar', 'Electronic City')
     # (2, 'Kiran', 'Kiran', 'kiran@gmail.com', 'Whitefield', 'KR Market')
-
+    # bdate = user[6][:10]
+    # print(bdate)
     conn.close()
     if user:
         return JSONResponse(
             {
                 "logged": "1",
                 "message": "Authenticated!",
-                "emailid": user[3],
-                "busstart": user[4],
-                "busstop": user[5],
+                "emailid": user[1],
+                "busstart": user[2],
+                "busstop": user[3],
+                "bdate": user[4][:10],
+                "age": user[5],
             }
         )
     else:
@@ -97,13 +111,14 @@ def signin_user(creds: User) -> JSONResponse:
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "INSERT INTO USERS (username, password, emailid, busstart, busstop) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO USERS (username, password, emailid, busstart, busstop, bdate) VALUES (?, ?, ?, ?, ?, ?)",
             (
                 creds.inputUsername,
                 creds.password,
                 creds.emailid,
                 creds.busstart,
                 creds.busstop,
+                creds.bdate,
             ),
         )
         conn.commit()
@@ -113,6 +128,38 @@ def signin_user(creds: User) -> JSONResponse:
         conn.close()
         return JSONResponse(
             {"signed": "0", "message": "username is already taken"}, status_code=401
+        )
+
+
+@app.post("/profile")
+def profile(creds: User) -> JSONResponse:
+    conn = sqlite3.connect("project.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+                   SELECT username, emailid, busstart, busstop, bdate, age
+                   FROM user_age
+                   WHERE username = ?
+                   """,
+        (creds.inputUsername,),
+    )
+    user = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    if user:
+        return JSONResponse(
+            {
+                # "username": user[0],
+                # "emailid": user[1],
+                # "busstart": user[2],
+                # "busstop": user[3],
+                # "bdate": user[4],
+                "age": user[5],
+            }
+        )
+    else:
+        return JSONResponse(
+            {"message": "User not found"}, status_code=404
         )
 
 
