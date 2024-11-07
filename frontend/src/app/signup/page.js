@@ -1,27 +1,37 @@
-"use client"
+'use client'
+
 import { useState, useContext } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider';
+import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
 import Link from 'next/link'
+import DatePicker from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css"
 
 export default function SignUp() {
-    const { setUsermailid, setBusstart, setBusstop } = useContext(UserCredentials);
+    const { setUsermailid, setBusstart, setBusstop, setBdate } = useContext(UserCredentials)
     const [formData, setFormData] = useState({
         username: '',
         password: '',
         email: '',
-        name: '',
         bus_start: '',
-        bus_stop: ''
+        bus_stop: '',
+        bdate: null,
     })
-    const [message, setMessage] = useState('') 
+    const [message, setMessage] = useState('')
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
+        })
+    }
+
+    const handleDateChange = (date) => {
+        setFormData({
+            ...formData,
+            bdate: date
         })
     }
 
@@ -38,7 +48,8 @@ export default function SignUp() {
                     password: formData.password,
                     emailid: formData.email,
                     busstart: formData.bus_start,
-                    busstop: formData.bus_stop
+                    busstop: formData.bus_stop,
+                    bdate: formData.bdate
                 }),
             })
 
@@ -47,6 +58,7 @@ export default function SignUp() {
                 setUsermailid(formData.email)
                 setBusstart(formData.bus_start)
                 setBusstop(formData.bus_stop)
+                setBdate(formData.bdate)
                 setMessage(data.message)
             } else {
                 setMessage(data.message)
@@ -61,21 +73,9 @@ export default function SignUp() {
         <div className="flex items-center justify-center min-h-screen bg-[#15151a]">
             <div className="w-full max-w-4xl p-8 space-y-6 bg-black rounded-xl shadow-xl">
                 <h1 className="text-3xl font-bold text-center text-white">Register for BMTC Bus Query</h1>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="flex space-x-8">
-                        <div className="flex-1 space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="name" className="text-white">Full Name</Label>
-                                <Input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    placeholder="enter your name"
-                                    required
-                                    className="w-full bg-gray-700 text-white border-gray-700 rounded-xl"
-                                    onChange={handleChange}
-                                />
-                            </div>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="email" className="text-white">Email</Label>
                                 <Input
@@ -113,7 +113,20 @@ export default function SignUp() {
                                 />
                             </div>
                         </div>
-                        <div className="flex-1 space-y-4">
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="bdate" className="text-white">Date of Birth</Label>
+                                <DatePicker
+                                    selected={formData.bdate}
+                                    onChange={handleDateChange}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="Select your date of birth"
+                                    className="w-full bg-gray-700 text-white border-gray-700 rounded-xl p-2"
+                                    wrapperClassName="w-full"
+                                    calendarClassName="bg-gray-800 text-white border-gray-700"
+                                    required
+                                />
+                            </div>
                             <div className="space-y-2">
                                 <Label htmlFor="bus_start" className="text-white">Bus Start</Label>
                                 <Input

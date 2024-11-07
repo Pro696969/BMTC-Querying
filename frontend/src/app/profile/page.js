@@ -1,5 +1,5 @@
 'use client'
-import { useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,13 +8,37 @@ import { Bus, MapPin, Clock } from 'lucide-react'
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
 
 export default function ProfilePage() {
-  const { username, usermailid, busstart, busstop} = useContext(UserCredentials);
+  const { username, usermailid, busstart, busstop } = useContext(UserCredentials);
+  const [age, setAge] = useState(null);
+
+  async function fetchprofile() {
+    const response = fetch(`http://localhost:8000/profile`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        age
+      }),
+    })
+    const data = await response.json()
+    if (response.ok) {
+      setAge(age)
+    } else {
+      console.error("Error fetching profile:", data.detail);
+    }
+  }
+
+  fetchprofile()
+
+
   const user = {
     user_id: "BMTC123456",
     user_name: username,
     user_start_stop: busstart,
     user_end_stop: busstop,
     email: usermailid,
+    age: age,
     notifications: true,
     favoriteRoutes: [
       { id: 1, name: "500K", from: "Majestic", to: "Whitefield" },
@@ -60,6 +84,10 @@ export default function ProfilePage() {
                 <div>
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" type="email" value={user.email} readOnly className="text-black bg-gray-750 rounded-xl" />
+                </div>
+                <div>
+                  <Label htmlFor="age">Age</Label>
+                  <Input id="age" type="number" value={user.age} readOnly className="text-black bg-gray-750 rounded-xl" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
