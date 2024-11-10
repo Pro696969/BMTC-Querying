@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
 import Link from 'next/link'
-import DatePicker from 'react-datepicker'
-import "react-datepicker/dist/react-datepicker.css"
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 export default function SignUp() {
   const { setUsermailid, setBdate } = useContext(UserCredentials)
@@ -15,7 +16,7 @@ export default function SignUp() {
     username: '',
     password: '',
     email: '',
-    bdate: '',
+    bdate: null,
   })
   const [message, setMessage] = useState('')
 
@@ -26,16 +27,21 @@ export default function SignUp() {
     })
   }
 
-  const handleDateChange = (bdate) => {
+  const handleDateChange = (date) => {
     setFormData({
       ...formData,
-      bdate
+      bdate: date
     })
   }
 
   const handleSubmit = async (e) => {
-    const fmtDate = (date) => date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() 
     e.preventDefault()
+    
+    // Format date as YYYY-MM-DD or empty string if no date
+    const formattedDate = formData.bdate ? 
+      `${formData.bdate.$y}-${formData.bdate.$M + 1}-${formData.bdate.$D}` : 
+      ''
+
     try {
       const response = await fetch(`http://localhost:8000/signup`, {
         method: "POST",
@@ -46,7 +52,7 @@ export default function SignUp() {
           inputUsername: formData.username,
           password: formData.password,
           emailid: formData.email,
-          bdate: fmtDate(formData.bdate)
+          bdate: formattedDate
         }),
       })
 
@@ -108,20 +114,33 @@ export default function SignUp() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="bdate" className="text-white">Date of Birth</Label>
-              <DatePicker
-                selected={formData.bdate}
-                onChange={handleDateChange}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="Select your date of birth"
-                className="w-full bg-gray-700 text-white border-gray-700 rounded-xl p-2"
-                wrapperClassName="w-full"
-                calendarClassName="bg-gray-800 text-white border-gray-700"
-                required
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={formData.bdate}
+                  onChange={handleDateChange}
+                  className="w-full"
+                  slotProps={{
+                    textField: {
+                      className: "w-full bg-gray-700 text-white border-gray-700 rounded-xl"
+                    }
+                  }}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      color: 'white',
+                      backgroundColor: '#374151',
+                    },
+                    '& .MuiSvgIcon-root': {
+                      color: 'white',
+                    }
+                  }}
+                />
+              </LocalizationProvider>
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <Button type="submit" className="px-8 py-2 text-white hover:text-blue-500 hover:border-blue-500 font-semibold border-white border-2 rounded-xl">
+            <Button 
+              className="px-8 py-2 text-white hover:text-blue-500 hover:border-blue-500 font-semibold border-white border-2 rounded-xl"
+            >
               Sign Up
             </Button>
           </div>
