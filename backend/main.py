@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -84,11 +85,26 @@ def age() -> JSONResponse:
 @app.get("/route/{category}/{query}")
 def get_route(category: str, query: str) -> JSONResponse:
     cursor = cnx.cursor()
+
+    def serialize_row(row):
+        ans = {}
+        for description, entry in zip(cursor.description, row):
+            if isinstance(entry, timedelta):
+                entry = entry.total_seconds()
+            ans[description[0]] = entry
+        return ans
+
+    def exe_query_for(what: str):
+        cursor.execute(f'SELECT route_no, distance, origin, destination, time FROM routes WHERE {what} LIKE "%{query}%"')
+
     match category:
         case "Route No":
-            return JSONResponse(bus_routes)
-            pass
-        case "Initial":
-            pass
-        case "Final":
-            pass
+            exe_query_for("route_no")
+        case "Origin":
+            exe_query_for("origin")
+        case "Destination":
+            exe_query_for("destination")
+        case "-":
+            return JSONResponse([])
+
+    return JSONResponse(list(serialize_row(row) for row in cursor))

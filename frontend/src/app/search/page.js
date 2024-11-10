@@ -15,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
 
-
 const Routes = ({ routes }) => {
   if (routes.length === 0) {
     return <p className="text-center mt-4 text-gray-400">No routes found. Try a different search term.</p>
@@ -27,7 +26,8 @@ const Routes = ({ routes }) => {
           <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-300">Route Number</TableHead>
           <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-300">From</TableHead>
           <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-300">To</TableHead>
-          <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-300">Via</TableHead>
+          <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-300">Distance</TableHead>
+          <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-300">Time</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -37,10 +37,11 @@ const Routes = ({ routes }) => {
             className={`border-t border-gray-700 hover:bg-[#1c1c24] ${index === routes.length - 1 ? '' : 'border-b border-gray-700'
               }`}
           >
-            <TableCell className="px-4 py-2 text-sm font-medium text-gray-100">{route.routeNumber}</TableCell>
-            <TableCell className="px-4 py-2 text-sm text-gray-300">{route.from}</TableCell>
-            <TableCell className="px-4 py-2 text-sm text-gray-300">{route.to}</TableCell>
-            <TableCell className="px-4 py-2 text-sm text-gray-300">{route.via}</TableCell>
+            <TableCell className="px-4 py-2 text-sm font-medium text-gray-100">{route.route_no}</TableCell>
+            <TableCell className="px-4 py-2 text-sm text-gray-300">{route.origin}</TableCell>
+            <TableCell className="px-4 py-2 text-sm text-gray-300">{route.destination}</TableCell>
+            <TableCell className="px-4 py-2 text-sm text-gray-300">{route.distance} KM</TableCell>
+            <TableCell className="px-4 py-2 text-sm text-gray-300">{route.time/60} Min</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -58,6 +59,10 @@ export default function BusSearch() {
   }
 
   const handleSearch = (event) => {
+    if (event.key != "Enter") {
+      return
+    }
+
     const { value } = event.target
     if (value.length === 0) {
       return
@@ -100,14 +105,14 @@ export default function BusSearch() {
               <DropdownMenuLabel>Category</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setChosen("Route No")}>Route No</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setChosen("Initial")}>Initial</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setChosen("Final")}>Final</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setChosen("Origin")}>Origin</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setChosen("Destination")}>Destination</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Input
             type="text"
             placeholder="Search by route number, from, to, or via"
-            onChange={handleSearch}
+            onKeyDown={handleSearch}
             className="w-full px-4 py-2 rounded-xl border-solid border-gray-700 bg-[#0c0c0f] text-gray-100 placeholder-gray-400 focus:border-sky-500 focus:border-2 transition-all duration-100 ease-in-out focus:ring-opacity-50"
           />
         </div>
