@@ -8,20 +8,10 @@ import mysql.connector
 from dotenv import load_dotenv
 
 load_dotenv()
-
-if os.getenv("mysql_pass") is None:
-    cnx = mysql.connector.connect(
-        host="127.0.0.1", port=3306, user="root", database="bmtc"
-    )
-
-else:
-    cnx = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
-        user="root",
-        database="bmtc",
-        password=os.getenv("mysql_pass"),
-    )
+extras = {} if (password := os.getenv("mysql_pass")) is None else {"password": password}
+cnx = mysql.connector.connect(
+    host="127.0.0.1", port=3306, user="root", database="bmtc", **extras
+)
 
 app = FastAPI()
 
@@ -51,7 +41,6 @@ bus_routes = json.load(open("bus_routes.json"))
 
 @app.post("/login")
 def login_user(creds: Login_user) -> JSONResponse:
-
     cursor = cnx.cursor()
     cursor.execute(
         """SELECT username, emailid
@@ -84,14 +73,12 @@ def signin_user(creds: User) -> JSONResponse:
     return JSONResponse({"signed": "1", "message": "Successfully registered"})
 
 
-@app.post("/profile")
+@app.get("/profile")
 def age() -> JSONResponse:
     cursor = cnx.cursor()
-    # cursor.execute("SELECT * FROM USERS;")
-    cursor.execute("SELECT username, age_calc(bdate) as age from USERS;")
+    cursor.execute("SELECT age_calc(bdate) as age from USERS;")
     age = cursor.fetchone()
-    print("hhiii")
-    return JSONResponse({"data": age})
+    return JSONResponse({"age": age[0]})
 
 
 @app.get("/route/{category}/{query}")

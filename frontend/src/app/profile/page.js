@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect ,useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -25,33 +25,20 @@ export default function ProfilePage() {
   // const data = response.json()
   // console.log(data)
   const [age, setAge] = useState(0)
-  const [error, setError] = useState(null)
   useEffect(() => {
-  const fetchProfile = async () => {
+    const fetchProfile = async () => {
       try {
-        const response = await fetch('http://localhost:8000/profile', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-
-        const data = await response.json()
-        
+        const data = await fetch('http://localhost:8000/profile').then((res) => res.json())
         if (data.success) {
           setAge(data.data)
-        } else {
-          setError(data.error)
         }
-      } 
-      catch (error) {
-        setError('Failed to fetch profile data')
+      } catch (error) {
         console.error('Error fetching profile:', error)
       }
     }
 
     fetchProfile()
-  }, []) 
+  }, [])
 
   const user = {
     user_name: username,
@@ -90,7 +77,7 @@ export default function ProfilePage() {
             <TabsContent value="info" className="space-y-4">
               <div className="grid gap-4">
                 <div className="grid grid-cols-2 gap-4">
-                  
+
                   <div>
                     <Label htmlFor="user_name">Name</Label>
                     <Input id="user_name" value={user.user_name} readOnly className="text-black bg-gray-750 rounded-xl" />
