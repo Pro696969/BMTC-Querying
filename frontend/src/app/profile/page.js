@@ -15,29 +15,13 @@ export default function ProfilePage() {
     redirect("/login");
   }
 
-  // const response = fetch(`http://localhost:8000/profile`, {
-  //   method: "GET",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   }
-  // })
-
-  // const data = response.json()
-  // console.log(data)
   const [age, setAge] = useState(0)
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const data = await fetch('http://localhost:8000/profile').then((res) => res.json())
-        if (data.success) {
-          setAge(data.data)
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error)
-      }
-    }
-
-    fetchProfile()
+    fetch(`http://localhost:8000/profile?username=${username}`)
+      .then((res) => res.json())
+      .then((json) => {
+        setAge(json.age)
+      })
   }, [])
 
   const user = {
@@ -82,10 +66,10 @@ export default function ProfilePage() {
                     <Label htmlFor="user_name">Name</Label>
                     <Input id="user_name" value={user.user_name} readOnly className="text-black bg-gray-750 rounded-xl" />
                   </div>
-                  <div>
+                  {age && <div>
                     <Label htmlFor="age">Age</Label>
                     <Input id="age" value={user.age} readOnly className="text-black bg-gray-750 rounded-xl" />
-                  </div>
+                  </div>}
 
                 </div>
                 <div>

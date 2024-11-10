@@ -4,7 +4,6 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-import json
 import mysql.connector
 from dotenv import load_dotenv
 
@@ -15,7 +14,6 @@ cnx = mysql.connector.connect(
 )
 
 app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -36,9 +34,8 @@ class Login_user(BaseModel):
     inputUsername: str
     password: str
 
-
-bus_routes = json.load(open("bus_routes.json"))
-
+class UserName(BaseModel):
+    username: str
 
 @app.post("/login")
 def login_user(creds: Login_user) -> JSONResponse:
@@ -75,9 +72,9 @@ def signin_user(creds: User) -> JSONResponse:
 
 
 @app.get("/profile")
-def age() -> JSONResponse:
+def age(username: str) -> JSONResponse:
     cursor = cnx.cursor()
-    cursor.execute("SELECT age_calc(bdate) as age from USERS;")
+    cursor.execute(f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"')
     age = cursor.fetchone()
     return JSONResponse({"age": age[0]})
 

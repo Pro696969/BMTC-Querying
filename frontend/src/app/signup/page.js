@@ -36,10 +36,9 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    // Format date as YYYY-MM-DD or empty string if no date
-    const formattedDate = formData.bdate ? 
-      `${formData.bdate.$y}-${formData.bdate.$M + 1}-${formData.bdate.$D}` : 
+
+    const formattedDate = formData.bdate ?
+      `${formData.bdate.$y}-${formData.bdate.$M + 1}-${formData.bdate.$D}` :
       ''
 
     try {
@@ -138,7 +137,7 @@ export default function SignUp() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <Button 
+            <Button
               className="px-8 py-2 text-white hover:text-blue-500 hover:border-blue-500 font-semibold border-white border-2 rounded-xl"
             >
               Sign Up
