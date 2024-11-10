@@ -1,5 +1,5 @@
 'use client'
-import { useState, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,26 +11,30 @@ export default function ProfilePage() {
   const { username, usermailid, busstart, busstop } = useContext(UserCredentials);
   const [age, setAge] = useState(null);
 
-  async function fetchprofile() {
-    const response = fetch(`http://localhost:8000/profile`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        age
-      }),
-    })
-    const data = await response.json()
-    if (response.ok) {
-      setAge(age)
-    } else {
-      console.error("Error fetching profile:", data.detail);
+  useEffect(() => {
+    async function fetchprofile() {
+      try {
+        const response = await fetch(`http://localhost:8000/profile`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            age
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile");
+        }
+        const data = await response.json();
+        setAge(data.age);
+      } catch (error) {
+        console.error("Error fetching profile:", error.message);
+      }
     }
-  }
 
-  fetchprofile()
-
+    fetchprofile();
+  }, []);
 
   const user = {
     user_id: "BMTC123456",
@@ -53,7 +57,7 @@ export default function ProfilePage() {
       validUntil: "2024-03-31",
       remainingDays: 15,
     },
-  }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#15151a] text-gray-100 p-8 ">
@@ -119,7 +123,7 @@ export default function ProfilePage() {
                 <h3 className="text-lg font-semibold mb-2">Recent Searches</h3>
                 <ul className="space-y-2">
                   {user.recentSearches.map(search => (
-                    <li key={search.id} className="border-2 bg-gray-750 p-3 rounded-xl rounded-xl flex items-center">
+                    <li key={search.id} className="border-2 bg-gray-750 p-3 rounded-xl flex items-center">
                       <MapPin className="mr-2" />
                       <span>{search.from} to {search.to}</span>
                       <Clock className="ml-auto mr-2" />
@@ -156,5 +160,5 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
