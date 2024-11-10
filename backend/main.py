@@ -1,13 +1,28 @@
+import os
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import json
-import sqlite3
-
 import mysql.connector
+from dotenv import load_dotenv
 
-cnx = mysql.connector.connect(host="127.0.0.1", port=3306, user="root", database="bmtc")
+load_dotenv()
+
+if os.getenv("mysql_pass") is None:
+    cnx = mysql.connector.connect(
+        host="127.0.0.1", port=3306, user="root", database="bmtc"
+    )
+
+else:
+    cnx = mysql.connector.connect(
+        host="127.0.0.1",
+        port=3306,
+        user="root",
+        database="bmtc",
+        password=os.getenv("mysql_pass"),
+    )
+
 app = FastAPI()
 
 app.add_middleware(
@@ -36,22 +51,20 @@ bus_routes = json.load(open("bus_routes.json"))
 
 @app.post("/login")
 def login_user(creds: Login_user) -> JSONResponse:
-    conn = sqlite3.connect("project.db")
-    cursor = conn.cursor()
 
+    cursor = cnx.cursor()
     cursor.execute(
-        """SELECT username, emailid, bdate
-        FROM users WHERE username = ? AND password = ?""",
+        """SELECT username, emailid
+        FROM USERS WHERE username = %s AND password = %s""",
         (creds.inputUsername, creds.password),
     )
     user = cursor.fetchone()
-    conn.close()
     if user:
         return JSONResponse(
             {
                 "logged": "1",
                 "message": "Authenticated!",
-                "emailid": user[2],
+                "emailid": user[1],
             }
         )
     else:
@@ -69,6 +82,16 @@ def signin_user(creds: User) -> JSONResponse:
     )
     cnx.commit()
     return JSONResponse({"signed": "1", "message": "Successfully registered"})
+
+
+@app.post("/profile")
+def age() -> JSONResponse:
+    cursor = cnx.cursor()
+    # cursor.execute("SELECT * FROM USERS;")
+    cursor.execute("SELECT username, age_calc(bdate) as age from USERS;")
+    age = cursor.fetchone()
+    print("hhiii")
+    return JSONResponse({"data": age})
 
 
 @app.get("/route/{category}/{query}")
