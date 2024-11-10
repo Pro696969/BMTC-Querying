@@ -1,48 +1,24 @@
 'use client'
-import { useState, useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Bus, MapPin, Clock } from 'lucide-react'
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
+import { redirect } from 'next/navigation'
 
 export default function ProfilePage() {
-  const { username, usermailid, busstart, busstop } = useContext(UserCredentials);
-  const [age, setAge] = useState(null);
+  const { username, usermailid } = useContext(UserCredentials);
 
-  useEffect(() => {
-    async function fetchprofile() {
-      try {
-        const response = await fetch(`http://localhost:8000/profile`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            age
-          }),
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch profile");
-        }
-        const data = await response.json();
-        setAge(data.age);
-      } catch (error) {
-        console.error("Error fetching profile:", error.message);
-      }
-    }
-
-    fetchprofile();
-  }, []);
+  if (!username) {
+    redirect("/login");
+  }
 
   const user = {
     user_id: "BMTC123456",
     user_name: username,
-    user_start_stop: busstart,
-    user_end_stop: busstop,
     email: usermailid,
-    age: age,
     notifications: true,
     favoriteRoutes: [
       { id: 1, name: "500K", from: "Majestic", to: "Whitefield" },
@@ -88,10 +64,6 @@ export default function ProfilePage() {
                 <div>
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" type="email" value={user.email} readOnly className="text-black bg-gray-750 rounded-xl" />
-                </div>
-                <div>
-                  <Label htmlFor="age">Age</Label>
-                  <Input id="age" type="number" value={user.age} readOnly className="text-black bg-gray-750 rounded-xl" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>

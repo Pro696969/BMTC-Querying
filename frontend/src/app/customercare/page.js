@@ -1,31 +1,7 @@
 "use client"
-import React, { useState } from 'react';
-import { Phone, HelpCircle, MessageCircle } from 'lucide-react';
+import { Phone, HelpCircle } from 'lucide-react';
 
 const CustomerCarePage = () => {
-    const [activeForm, setActiveForm] = useState('feedback');
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-    });
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // TODO: Implement form submission logic
-        console.log('Form submitted:', formData);
-        alert('Thank you for your submission! We will get back to you soon.');
-    };
-
     const faqItems = [
         {
             question: "How do I search for bus routes?",
@@ -87,67 +63,6 @@ const CustomerCarePage = () => {
                             </div>
                         ))}
                     </div>
-                </section>
-
-                {/* Feedback and Complaint Form */}
-                <section className="w-3/4 bg-[#0c0c0f] p-6 rounded-xl">
-                    <h2 className="text-2xl font-semibold mb-6 flex items-center border-b border-gray-800 pb-3">
-                        <MessageCircle className="mr-3 text-white" /> Feedback & Support
-                    </h2>
-
-                    <div className="flex mb-6 space-x-4">
-                        <button
-                            className={`py-2 px-4 rounded-xl transition-colors duration-300 ${activeForm === 'feedback'
-                                    ? 'bg-white text-black'
-                                    : 'bg-[#282c35] text-gray-300 hover:bg-gray-700'
-                                }`}
-                            onClick={() => setActiveForm('feedback')}
-                        >
-                            Feedback
-                        </button>
-                        <button
-                            className={`py-2 px-4 rounded-xl transition-colors duration-300 ${activeForm === 'complaint'
-                                    ? 'bg-white text-black'
-                                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                }`}
-                            onClick={() => setActiveForm('complaint')}
-                        >
-                            Report an Issue
-                        </button>
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
-
-                        <select
-                            name="subject"
-                            value={formData.subject}
-                            onChange={handleInputChange}
-                            className="w-full p-3 bg-[#282c35] text-white border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-white"
-                            required
-                        >
-                            <option value="" className="bg-black">Select Subject</option>
-                            <option value="route" className="bg-black">Route Information</option>
-                            <option value="tracking" className="bg-black">Bus Tracking</option>
-                            <option value="app" className="bg-black">Mobile App</option>
-                            <option value="other" className="bg-black">Other</option>
-                        </select>
-                        <textarea
-                            name="message"
-                            placeholder={activeForm === 'feedback'
-                                ? "Share your suggestions or feedback"
-                                : "Describe the issue you're experiencing"}
-                            value={formData.message}
-                            onChange={handleInputChange}
-                            className="w-full p-3 bg-[#282c35] text-white border border-gray-700 rounded-xl h-32 focus:outline-none focus:ring-2 focus:ring-white"
-                            required
-                        ></textarea>
-                        <button
-                            type="submit"
-                            className="w-1/4 bg-white font-semibold text-black hover:bg-gray-100 rounded-xl py-3 rounded-xl hover:bg-gray-200 transition-colors duration-300"
-                        >
-                            Submit {activeForm === 'feedback' ? 'Feedback' : 'Complaint'}
-                        </button>
-                    </form>
                 </section>
             </div>
         </div>

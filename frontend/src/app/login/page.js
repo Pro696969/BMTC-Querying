@@ -1,12 +1,12 @@
 "use client";
 import React, { useContext, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Lock, Mail, User } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
 import { useRouter } from 'next/navigation'
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider';
 
 const LoginPage = () => {
-  const { setUsername, setUsermailid, setBusstart, setBusstop } = useContext(UserCredentials);
+  const { setUsername, setUsermailid } = useContext(UserCredentials);
   const [inputUsername, setInputUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('')
@@ -25,8 +25,6 @@ const LoginPage = () => {
       if (data.logged === "1") {
         setUsername(inputUsername)
         setUsermailid(data.emailid)
-        setBusstart(data.busstart)
-        setBusstop(data.busstop)
         router.push('/')
         console.log("well done")
       }
@@ -44,7 +42,7 @@ const LoginPage = () => {
           </p>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4 flex flex-col items-center" onSubmit={handleSubmit}>
+          <form className="space-y-4 flex flex-col items-center" onSubmit={handleSubmit} autoComplete="off">
             <div className="space-y-2 w-full">
               <div className="relative">
                 <Mail className="absolute left-3 top-4 h-5 w-5 text-gray-200" />
