@@ -68,7 +68,7 @@ def login_user(creds: Login_user) -> JSONResponse:
 def signin_user(creds: User) -> JSONResponse:
     cursor = cnx.cursor()
     cursor.execute(
-        "INSERT INTO users VALUES (%s, %s, %s, %s)",
+        "INSERT INTO users (username, password, emailid, bdate) VALUES (%s, %s, %s, %s)",
         (creds.inputUsername, creds.password, creds.emailid, creds.bdate),
     )
     cnx.commit()
@@ -77,19 +77,12 @@ def signin_user(creds: User) -> JSONResponse:
 
 @app.get("/profile")
 def age(username: str) -> JSONResponse:
-    cursor = cnx.cursor()
-    try:
-        cursor.execute(
-            f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"'
-        )
-    except:
-        print("exception occured")
-        cnx.reconnect()
-        cursor.execute(
-            f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"'
-        )
-    age = cursor.fetchone()
-    return JSONResponse({"age": age[0]})
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(
+        f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"'
+    )
+    output = cursor.fetchone()
+    return JSONResponse({"age": output["age"]})
 
 
 @app.delete("/profile")
@@ -103,20 +96,14 @@ def delete_user(username: str) -> JSONResponse:
 
 @app.get("/route/{category}/{query}")
 def get_route(category: str, query: str) -> JSONResponse:
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(dictionary=True)
 
     def serialize_row(row):
-        ans = {}
-        for description, entry in zip(cursor.description, row):
-            if isinstance(entry, timedelta):
-                entry = entry.total_seconds()
-            ans[description[0]] = entry
-        return ans
+        row["time"] = row["time"].total_seconds()
+        return row
 
     def exe_query_for(what: str):
-        cursor.execute(
-            f'SELECT route_no, distance, origin, destination, time FROM routes WHERE {what} LIKE "%{query}%"'
-        )
+        cursor.execute(f'SELECT * FROM routes WHERE {what} LIKE "%{query}%"')
 
     match category:
         case "Route No":
@@ -128,4 +115,16 @@ def get_route(category: str, query: str) -> JSONResponse:
         case "-":
             return JSONResponse([])
 
-    return JSONResponse(list(serialize_row(row) for row in cursor))
+    return JSONResponse(list(map(serialize_row, cursor.fetchall())))
+
+
+@app.get("/star/{route_id}")
+def star_route(route_id: int) -> JSONResponse:
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(
+        "UPDATE routes "
+        f"SET starred = (SELECT NOT starred FROM (SELECT starred FROM routes WHERE route_id = {route_id}) AS temp) "
+        f"WHERE route_id = {route_id}"
+    )
+    cnx.commit()
+    return JSONResponse({"success": True})

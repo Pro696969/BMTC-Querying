@@ -1,4 +1,4 @@
-insert into routes values 
+insert into routes (route_no, distance, origin , destination, time) values
 ("1", 19.6, "Jayanagara 9th Block", "Yeshwanathapura new railway station", "01:25"),
 ("1E", 20.8, "JPNagara 6th Phase", "Chowdeshwari Bus Stand JP Park", "01:45"),
 ("1F", 11.5, "BTM Layout", "Krishnarajendra Market", "00:50"),

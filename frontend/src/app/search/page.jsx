@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useContext, useCallback } from 'react'
+import { useState, useContext } from 'react'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { redirect } from "next/navigation"
@@ -56,7 +56,7 @@ const Routes = ({ routes, starredRoutes, onStarRoute }) => {
               <TableCell className="px-4 py-2 text-sm text-gray-300">{route.origin}</TableCell>
               <TableCell className="px-4 py-2 text-sm text-gray-300">{route.destination}</TableCell>
               <TableCell className="px-4 py-2 text-sm text-gray-300">{route.distance} KM</TableCell>
-              <TableCell className="px-4 py-2 text-sm text-gray-300">{route.time/60} Min</TableCell>
+              <TableCell className="px-4 py-2 text-sm text-gray-300">{route.time / 60} Min</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -89,10 +89,11 @@ export default function BusSearch() {
       .then((res) => res.json())
       .then((json) => {
         setSearchResults(json)
+        setStarredRoutes((prevStarred) => prevStarred.filter(r => r.starred))
       })
   }
 
-  const handleStarRoute = useCallback((route) => {
+  const handleStarRoute = (route) => {
     setStarredRoutes((prevStarred) => {
       const isAlreadyStarred = prevStarred.some(r => r.route_no === route.route_no)
       if (isAlreadyStarred) {
@@ -101,7 +102,8 @@ export default function BusSearch() {
         return [...prevStarred, route]
       }
     })
-  }, [])
+    fetch(`http://localhost:8000/star/${route.route_id}`)
+  }
 
   return (
     <div className="flex flex-col items-center bg-[#15151a] w-full min-h-screen">
