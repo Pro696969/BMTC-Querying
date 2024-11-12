@@ -84,6 +84,20 @@ def age(username: str) -> JSONResponse:
     age = cursor.fetchone()
     return JSONResponse({"age": age[0]})
 
+@app.delete("/profile")
+def delete_user(username: str) -> JSONResponse:
+    cursor = cnx.cursor()
+    try:
+        cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
+        cnx.commit()  # Commit the deletion to the database
+    except Exception as e:
+        print("Exception occurred while deleting user:", e)
+        cnx.reconnect()
+        cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
+        cnx.commit()
+    
+    return JSONResponse({"message": f"User '{username}' deleted successfully"})
+
 
 @app.get("/route/{category}/{query}")
 def get_route(category: str, query: str) -> JSONResponse:

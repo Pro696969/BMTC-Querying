@@ -9,7 +9,26 @@ import { UserCredentials } from '../../components/usercontext/UserCredentialsPro
 import { redirect } from 'next/navigation'
 
 export default function ProfilePage() {
-  const { username, usermailid } = useContext(UserCredentials);
+  const { username, usermailid, setUsername } = useContext(UserCredentials);
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/profile?username=${username}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log("User deleted successfully")
+        setUsername('')
+        redirect('/')
+      }
+    } catch (error) {
+      console.log("Error occured: ", error)
+    }
+  }
 
   if (!username) {
     redirect("/login");
@@ -43,6 +62,9 @@ export default function ProfilePage() {
       remainingDays: 15,
     },
   };
+
+
+
 
   return (
     <div className="flex flex-col min-h-screen bg-[#15151a] text-gray-100 p-8 ">
@@ -84,6 +106,10 @@ export default function ProfilePage() {
                   <div>
                     <Label htmlFor="end_stop">Usual End Stop</Label>
                     <Input id="end_stop" value={user.user_end_stop} readOnly className="text-black bg-gray-750 rounded-xl" />
+                  </div>
+                  <div className="flex flex-row">
+                    <button className="px-2 py-2 bg-gray-700 text-white rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-all duration-200 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0"
+                      onClick={handleDelete}>Delete User</button>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
