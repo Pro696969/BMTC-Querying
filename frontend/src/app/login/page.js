@@ -2,7 +2,7 @@
 import React, { useContext, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Lock, Mail } from 'lucide-react';
-import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation';
 import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider';
 
 const LoginPage = () => {
@@ -10,8 +10,6 @@ const LoginPage = () => {
   const [inputUsername, setInputUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('')
-
-  const router = useRouter()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,8 +23,7 @@ const LoginPage = () => {
       if (data.logged === "1") {
         setUsername(inputUsername)
         setUsermailid(data.emailid)
-        router.push('/')
-        console.log("well done")
+        redirect('/')
       }
       setMessage(data.message)
     })

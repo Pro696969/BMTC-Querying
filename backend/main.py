@@ -40,9 +40,10 @@ class UserName(BaseModel):
 @app.post("/login")
 def login_user(creds: Login_user) -> JSONResponse:
     cursor = cnx.cursor()
+    print("executingg")
     cursor.execute(
         """SELECT username, emailid
-        FROM USERS WHERE username = %s AND password = %s""",
+        FROM users WHERE username = %s AND password = %s""",
         (creds.inputUsername, creds.password),
     )
     user = cursor.fetchone()
@@ -64,7 +65,7 @@ def login_user(creds: Login_user) -> JSONResponse:
 def signin_user(creds: User) -> JSONResponse:
     cursor = cnx.cursor()
     cursor.execute(
-        "INSERT INTO USERS VALUES (%s, %s, %s, %s)",
+        "INSERT INTO users VALUES (%s, %s, %s, %s)",
         (creds.inputUsername, creds.password, creds.emailid, creds.bdate),
     )
     cnx.commit()
@@ -74,7 +75,12 @@ def signin_user(creds: User) -> JSONResponse:
 @app.get("/profile")
 def age(username: str) -> JSONResponse:
     cursor = cnx.cursor()
-    cursor.execute(f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"')
+    try:
+        cursor.execute(f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"')
+    except:
+        print("exception occured")
+        cnx.reconnect()
+        cursor.execute(f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"')
     age = cursor.fetchone()
     return JSONResponse({"age": age[0]})
 
