@@ -13,6 +13,7 @@ cnx = mysql.connector.connect(
     host="127.0.0.1", port=3306, user="root", database="bmtc", **extras
 )
 
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -34,8 +35,10 @@ class Login_user(BaseModel):
     inputUsername: str
     password: str
 
+
 class UserName(BaseModel):
     username: str
+
 
 @app.post("/login")
 def login_user(creds: Login_user) -> JSONResponse:
@@ -76,26 +79,25 @@ def signin_user(creds: User) -> JSONResponse:
 def age(username: str) -> JSONResponse:
     cursor = cnx.cursor()
     try:
-        cursor.execute(f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"')
+        cursor.execute(
+            f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"'
+        )
     except:
         print("exception occured")
         cnx.reconnect()
-        cursor.execute(f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"')
+        cursor.execute(
+            f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"'
+        )
     age = cursor.fetchone()
     return JSONResponse({"age": age[0]})
+
 
 @app.delete("/profile")
 def delete_user(username: str) -> JSONResponse:
     cursor = cnx.cursor()
-    try:
-        cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
-        cnx.commit()  # Commit the deletion to the database
-    except Exception as e:
-        print("Exception occurred while deleting user:", e)
-        cnx.reconnect()
-        cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
-        cnx.commit()
-    
+    cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
+    cnx.commit()
+
     return JSONResponse({"message": f"User '{username}' deleted successfully"})
 
 
@@ -112,7 +114,9 @@ def get_route(category: str, query: str) -> JSONResponse:
         return ans
 
     def exe_query_for(what: str):
-        cursor.execute(f'SELECT route_no, distance, origin, destination, time FROM routes WHERE {what} LIKE "%{query}%"')
+        cursor.execute(
+            f'SELECT route_no, distance, origin, destination, time FROM routes WHERE {what} LIKE "%{query}%"'
+        )
 
     match category:
         case "Route No":

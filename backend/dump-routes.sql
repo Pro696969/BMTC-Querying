@@ -1,4 +1,3 @@
-create table routes(route_no varchar(16), distance float, origin varchar(64), destination varchar(64), time time);
 insert into routes values 
 ("1", 19.6, "Jayanagara 9th Block", "Yeshwanathapura new railway station", "01:25"),
 ("1E", 20.8, "JPNagara 6th Phase", "Chowdeshwari Bus Stand JP Park", "01:45"),

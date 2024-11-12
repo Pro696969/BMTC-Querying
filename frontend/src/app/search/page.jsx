@@ -3,7 +3,6 @@
 import { useState, useContext, useCallback } from 'react'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import TypeIt from "typeit-react"
 import { redirect } from "next/navigation"
 import {
   DropdownMenu,
@@ -107,24 +106,7 @@ export default function BusSearch() {
   return (
     <div className="flex flex-col items-center bg-[#15151a] w-full min-h-screen">
       <div className="mx-auto p-4 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center text-primary">
-          <TypeIt className="text-4xl font-bold text-gray-100" getBeforeInit={(instance) => {
-            instance
-              .options({ speed: 50 })
-              .type(`BMTC Route <span style="color: rgb(6 182 212);"> Search</span>`)
-              .pause(250)
-              .pause(700)
-              .options({ speed: 2, lifeLike: true })
-              .delete(6)
-              .pause(700)
-              .options({ speed: 2, lifeLike: true })
-              .type(`<span style="color: rgb(6 182 212);">Fuzzy Search</span>`)
-              .pause(700)
-            return instance;
-          }}
-            options={{ afterComplete: (instance) => instance.destroy() }}
-          />
-        </h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-primary">Fuzzy Search</h1>
         <div className="mb-6 w-full flex flex-row max-w-lg">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

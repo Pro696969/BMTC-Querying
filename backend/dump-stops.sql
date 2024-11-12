@@ -1,4 +1,3 @@
-create table stops(name varchar(128), latitude decimal(16, 13), longitude decimal(16, 13));
 insert into stops values
 ("Jayanagara 9th Block,JAYANAGARA 9TH BLOCK,BESIDE HOTEL SRI SAI", 12.9197565816171, 77.5923588994416),
 ("Jayanagara T Block,JAYANAGARA 4TH T BLOCK,BESIDE HDFC BANK", 12.9226893214618, 77.5933845451659),
