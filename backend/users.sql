@@ -48,3 +48,23 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+SELECT 
+    COUNT(*) AS total_users,
+    AVG(YEAR(CURDATE()) - YEAR(bdate)) AS average_age,
+    MAX(YEAR(CURDATE()) - YEAR(bdate)) AS oldest_user_age,
+    MIN(YEAR(CURDATE()) - YEAR(bdate)) AS youngest_user_age
+FROM users;
+
+SELECT 
+    u.user_id, 
+    u.username, 
+    r.route_no, 
+    r.origin, 
+    r.destination
+FROM 
+    users u
+JOIN 
+    routes r
+ON 
+    u.user_id = r.route_id;

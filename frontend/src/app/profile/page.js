@@ -10,6 +10,7 @@ import { redirect } from 'next/navigation'
 
 export default function ProfilePage() {
   const { username, usermailid, setUsername } = useContext(UserCredentials);
+  const [favoriteRoutes, setFavoriteRoutes] = useState([]);
 
   const handleDelete = async () => {
     try {
@@ -34,6 +35,24 @@ export default function ProfilePage() {
     redirect("/login");
   }
 
+   // Fetch starred routes
+   useEffect(() => {
+    const fetchStarredRoutes = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/profile');
+        const data = await response.json();
+        setFavoriteRoutes(data.favourites || []);
+      } catch (error) {
+        console.error("Error fetching starred routes:", error);
+        setFavoriteRoutes([]);
+      }
+    };
+
+    fetchStarredRoutes();
+  }, []);
+
+  console.log(favoriteRoutes)
+
   const [age, setAge] = useState(0)
   useEffect(() => {
     fetch(`http://localhost:8000/profile?username=${username}`)
@@ -43,6 +62,8 @@ export default function ProfilePage() {
       })
   }, [])
 
+  console.log(favoriteRoutes)
+  
   const user = {
     user_name: username,
     email: usermailid,
@@ -120,7 +141,7 @@ export default function ProfilePage() {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Favorite Routes</h3>
                 <ul className="space-y-2">
-                  {user.favoriteRoutes.map(route => (
+                  {favoriteRoutes.map(route => (
                     <li key={route.id} className="border-2 bg-gray-750 p-3 rounded-xl flex items-center">
                       <Bus className="mr-2" />
                       <span>{route.name}: {route.from} to {route.to}</span>

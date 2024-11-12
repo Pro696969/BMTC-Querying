@@ -82,6 +82,7 @@ def age(username: str) -> JSONResponse:
         f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"'
     )
     output = cursor.fetchone()
+    
     return JSONResponse({"age": output["age"]})
 
 
@@ -93,6 +94,22 @@ def delete_user(username: str) -> JSONResponse:
 
     return JSONResponse({"message": f"User '{username}' deleted successfully"})
 
+@app.get("/starred-routes") # here we dont need to check favs for a particular user jus keep it minimal 
+def fav_routes() -> JSONResponse:
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f'SELECT route_id, route_no, origin, destination FROM routes WHERE starred=1')
+    fav_routes = cursor.fetchmany(4)
+    cnx.commit()
+    
+    fav_routes_dicto = [
+        {"id": route["route_id"], "name": route["route_no"], "from": route["origin"], "to": route["destination"]}
+        for route in fav_routes
+    ]
+    
+    cursor.close()
+    cnx.close()
+    
+    return JSONResponse({"favourites": fav_routes_dicto})
 
 @app.get("/route/{category}/{query}")
 def get_route(category: str, query: str) -> JSONResponse:
