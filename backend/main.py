@@ -74,9 +74,9 @@ def signin_user(creds: User) -> JSONResponse:
 
 @app.get("/profile")
 def age(username: str) -> JSONResponse:
-    with closing(cnx.cursor(dictionary=True)) as cursor:
+    with closing(cnx.cursor(dictionary=True, buffered=True)) as cursor:
         cursor.execute(
-            "SELECT age_calc(bdate) as age " f'FROM users WHERE username = "{username}"'
+            f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}" LIMIT 1'
         )
         result = cursor.fetchone()
 
