@@ -11,6 +11,7 @@ import { redirect } from 'next/navigation'
 export default function ProfilePage() {
   const { username, usermailid, setUsername } = useContext(UserCredentials);
   const [favoriteRoutes, setFavoriteRoutes] = useState([]);
+  const [age, setAge] = useState(0)
 
   const handleDelete = async () => {
     try {
@@ -35,56 +36,22 @@ export default function ProfilePage() {
     redirect("/login");
   }
 
-   // Fetch starred routes
-   useEffect(() => {
-    const fetchStarredRoutes = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/profile');
-        const data = await response.json();
-        setFavoriteRoutes(data.favourites || []);
-      } catch (error) {
-        console.error("Error fetching starred routes:", error);
-        setFavoriteRoutes([]);
-      }
-    };
-
-    fetchStarredRoutes();
-  }, []);
-
-  console.log(favoriteRoutes)
-
-  const [age, setAge] = useState(0)
   useEffect(() => {
     fetch(`http://localhost:8000/profile?username=${username}`)
       .then((res) => res.json())
       .then((json) => {
         setAge(json.age)
+        setFavoriteRoutes(json.favourites)
       })
   }, [])
 
-  console.log(favoriteRoutes)
-  
   const user = {
-    user_name: username,
-    email: usermailid,
-    age: age,
-    notifications: true,
-    favoriteRoutes: [
-      { id: 1, name: "500K", from: "Majestic", to: "Whitefield" },
-      { id: 2, name: "401", from: "Shivajinagar", to: "Electronic City" },
-    ],
-    recentSearches: [
-      { id: 1, from: "Indiranagar", to: "MG Road", date: "2024-03-01" },
-      { id: 2, from: "Koramangala", to: "Hebbal", date: "2024-02-28" },
-    ],
     busPass: {
       type: "Monthly",
       validUntil: "2024-03-31",
       remainingDays: 15,
     },
   };
-
-
 
 
   return (
@@ -107,17 +74,17 @@ export default function ProfilePage() {
 
                   <div>
                     <Label htmlFor="user_name">Name</Label>
-                    <Input id="user_name" value={user.user_name} readOnly className="text-black bg-gray-750 rounded-xl" />
+                    <Input id="user_name" value={username} readOnly className="text-black bg-gray-750 rounded-xl" />
                   </div>
                   {age && <div>
                     <Label htmlFor="age">Age</Label>
-                    <Input id="age" value={user.age} readOnly className="text-black bg-gray-750 rounded-xl" />
+                    <Input id="age" value={age} readOnly className="text-black bg-gray-750 rounded-xl" />
                   </div>}
 
                 </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" value={user.email} readOnly className="text-black bg-gray-750 rounded-xl" />
+                  <Input id="email" type="email" value={usermailid} readOnly className="text-black bg-gray-750 rounded-xl" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -142,22 +109,9 @@ export default function ProfilePage() {
                 <h3 className="text-lg font-semibold mb-2">Favorite Routes</h3>
                 <ul className="space-y-2">
                   {favoriteRoutes.map(route => (
-                    <li key={route.id} className="border-2 bg-gray-750 p-3 rounded-xl flex items-center">
+                    <li key={route.route_id} className="border-2 bg-gray-750 p-3 rounded-xl flex items-center">
                       <Bus className="mr-2" />
-                      <span>{route.name}: {route.from} to {route.to}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Recent Searches</h3>
-                <ul className="space-y-2">
-                  {user.recentSearches.map(search => (
-                    <li key={search.id} className="border-2 bg-gray-750 p-3 rounded-xl flex items-center">
-                      <MapPin className="mr-2" />
-                      <span>{search.from} to {search.to}</span>
-                      <Clock className="ml-auto mr-2" />
-                      <span>{search.date}</span>
+                      <span>{route.route_no}: {route.origin} to {route.destination}</span>
                     </li>
                   ))}
                 </ul>

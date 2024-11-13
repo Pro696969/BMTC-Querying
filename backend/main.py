@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta
+from contextlib import closing
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -36,20 +36,16 @@ class Login_user(BaseModel):
     password: str
 
 
-class UserName(BaseModel):
-    username: str
-
-
 @app.post("/login")
 def login_user(creds: Login_user) -> JSONResponse:
-    cursor = cnx.cursor()
-    print("executingg")
-    cursor.execute(
-        """SELECT username, emailid
-        FROM users WHERE username = %s AND password = %s""",
-        (creds.inputUsername, creds.password),
-    )
-    user = cursor.fetchone()
+    with closing(cnx.cursor()) as cursor:
+        cursor.execute(
+            "SELECT username, emailid "
+            "FROM users WHERE username = %s AND password = %s",
+            (creds.inputUsername, creds.password),
+        )
+        user = cursor.fetchone()
+
     if user:
         return JSONResponse(
             {
@@ -66,82 +62,72 @@ def login_user(creds: Login_user) -> JSONResponse:
 
 @app.post("/signup")
 def signin_user(creds: User) -> JSONResponse:
-    cursor = cnx.cursor()
-    cursor.execute(
-        "INSERT INTO users (username, password, emailid, bdate) VALUES (%s, %s, %s, %s)",
-        (creds.inputUsername, creds.password, creds.emailid, creds.bdate),
-    )
-    cnx.commit()
+    with closing(cnx.cursor()) as cursor:
+        cursor.execute(
+            "INSERT INTO users (username, password, emailid, bdate) VALUES (%s, %s, %s, %s)",
+            (creds.inputUsername, creds.password, creds.emailid, creds.bdate),
+        )
+        cnx.commit()
+
     return JSONResponse({"signed": "1", "message": "Successfully registered"})
 
 
 @app.get("/profile")
 def age(username: str) -> JSONResponse:
-    cursor = cnx.cursor(dictionary=True)
-    cursor.execute(
-        f'SELECT age_calc(bdate) as age FROM users WHERE username = "{username}"'
-    )
-    output = cursor.fetchone()
-    
-    return JSONResponse({"age": output["age"]})
+    with closing(cnx.cursor(dictionary=True)) as cursor:
+        cursor.execute(
+            "SELECT age_calc(bdate) as age " f'FROM users WHERE username = "{username}"'
+        )
+        result = cursor.fetchone()
+
+        cursor.execute(
+            "SELECT route_id, route_no, origin, destination "
+            "FROM routes WHERE starred=1"
+        )
+        fav_routes = cursor.fetchmany(4)
+
+    return JSONResponse({"age": result["age"], "favourites": fav_routes})
 
 
 @app.delete("/profile")
 def delete_user(username: str) -> JSONResponse:
-    cursor = cnx.cursor()
-    cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
-    cnx.commit()
-
+    with closing(cnx.cursor()) as cursor:
+        cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
+        cnx.commit()
     return JSONResponse({"message": f"User '{username}' deleted successfully"})
 
-@app.get("/starred-routes") # here we dont need to check favs for a particular user jus keep it minimal 
-def fav_routes() -> JSONResponse:
-    cursor = cnx.cursor(dictionary=True)
-    cursor.execute(f'SELECT route_id, route_no, origin, destination FROM routes WHERE starred=1')
-    fav_routes = cursor.fetchmany(4)
-    cnx.commit()
-    
-    fav_routes_dicto = [
-        {"id": route["route_id"], "name": route["route_no"], "from": route["origin"], "to": route["destination"]}
-        for route in fav_routes
-    ]
-    
-    cursor.close()
-    cnx.close()
-    
-    return JSONResponse({"favourites": fav_routes_dicto})
 
 @app.get("/route/{category}/{query}")
 def get_route(category: str, query: str) -> JSONResponse:
-    cursor = cnx.cursor(dictionary=True)
-
     def serialize_row(row):
         row["time"] = row["time"].total_seconds()
         return row
 
-    def exe_query_for(what: str):
-        cursor.execute(f'SELECT * FROM routes WHERE {what} LIKE "%{query}%"')
+    with closing(cnx.cursor(dictionary=True)) as cursor:
 
-    match category:
-        case "Route No":
-            exe_query_for("route_no")
-        case "Origin":
-            exe_query_for("origin")
-        case "Destination":
-            exe_query_for("destination")
-        case "-":
-            return JSONResponse([])
+        def exe_query_for(what: str):
+            cursor.execute(f'SELECT * FROM routes WHERE {what} LIKE "%{query}%"')
 
-    return JSONResponse(list(map(serialize_row, cursor.fetchall())))
+        match category:
+            case "Route No":
+                exe_query_for("route_no")
+            case "Origin":
+                exe_query_for("origin")
+            case "Destination":
+                exe_query_for("destination")
+            case "-":
+                return JSONResponse([])
+
+        return JSONResponse(list(map(serialize_row, cursor.fetchall())))
 
 
 @app.get("/star/{route_id}")
 def star_route(route_id: int) -> JSONResponse:
-    cursor = cnx.cursor(dictionary=True)
-    cursor.execute(
-        "UPDATE routes "
-        f"SET starred = (SELECT NOT starred FROM (SELECT starred FROM routes WHERE route_id = {route_id}) AS temp) "
-        f"WHERE route_id = {route_id}"
-    )
-    cnx.commit()
+    with closing(cnx.cursor(dictionary=True)) as cursor:
+        cursor.execute(
+            "UPDATE routes "
+            f"SET starred = (SELECT NOT starred FROM (SELECT starred FROM routes WHERE route_id = {route_id}) AS temp) "
+            f"WHERE route_id = {route_id}"
+        )
+        cnx.commit()
     return JSONResponse({"success": True})
