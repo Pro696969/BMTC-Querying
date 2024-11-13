@@ -9,7 +9,7 @@ const AboutPage = () => {
     },
     {
       name: 'Krishna Kumar',
-      role: 'Co Programmer',
+      role: 'Core Programmer',
       image: 'kk.webp',
     },
   ];
