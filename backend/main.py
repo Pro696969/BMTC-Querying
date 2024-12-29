@@ -13,7 +13,6 @@ cnx = mysql.connector.connect(
     host="127.0.0.1", port=3306, user="root", database="bmtc", **extras
 )
 
-
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -23,18 +22,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 class User(BaseModel):
     inputUsername: str
     password: str
     emailid: str
     bdate: str
 
-
 class Login_user(BaseModel):
     inputUsername: str
     password: str
-
 
 @app.post("/login")
 def login_user(creds: Login_user) -> JSONResponse:
@@ -59,7 +55,6 @@ def login_user(creds: Login_user) -> JSONResponse:
             {"logged": "0", "message": "Wrong Username or Password"}, status_code=401
         )
 
-
 @app.post("/signup")
 def signin_user(creds: User) -> JSONResponse:
     with closing(cnx.cursor()) as cursor:
@@ -71,7 +66,6 @@ def signin_user(creds: User) -> JSONResponse:
 
     return JSONResponse({"signed": "1", "message": "Successfully registered"})
 
-
 @app.get("/profile")
 def age(username: str) -> JSONResponse:
     with closing(cnx.cursor(dictionary=True, buffered=True)) as cursor:
@@ -81,13 +75,15 @@ def age(username: str) -> JSONResponse:
         result = cursor.fetchone()
 
         cursor.execute(
-            "SELECT route_id, route_no, origin, destination "
-            "FROM routes WHERE starred=1"
+            "SELECT r.route_id, r.route_no, r.origin, r.destination "
+            "FROM users u "
+            "JOIN user_starred_routes usr ON u.user_id = usr.user_id "
+            "JOIN routes r ON r.route_id = usr.route_id "
+            "ORDER BY u.username; "
         )
         fav_routes = cursor.fetchmany(4)
 
     return JSONResponse({"age": result["age"], "favourites": fav_routes})
-
 
 @app.delete("/profile")
 def delete_user(username: str) -> JSONResponse:
@@ -95,7 +91,6 @@ def delete_user(username: str) -> JSONResponse:
         cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
         cnx.commit()
     return JSONResponse({"message": f"User '{username}' deleted successfully"})
-
 
 @app.get("/route/{category}/{query}")
 def get_route(category: str, query: str) -> JSONResponse:
@@ -120,14 +115,53 @@ def get_route(category: str, query: str) -> JSONResponse:
 
         return JSONResponse(list(map(serialize_row, cursor.fetchall())))
 
-
-@app.get("/star/{route_id}")
-def star_route(route_id: int) -> JSONResponse:
+@app.get("/star/{username}/{route_id}")
+def star_route(username: str, route_id: int) -> JSONResponse:
     with closing(cnx.cursor(dictionary=True)) as cursor:
+        cursor.execute("SELECT user_id FROM users WHERE username = %s", (username, ))
+        user = cursor.fetchone()
+        if not user:
+            return JSONResponse({"success": False, "message": "User not found"}, status_code=404)
+        user_id = user["user_id"]
+        
         cursor.execute(
-            "UPDATE routes "
-            f"SET starred = (SELECT NOT starred FROM (SELECT starred FROM routes WHERE route_id = {route_id}) AS temp) "
-            f"WHERE route_id = {route_id}"
+            "SELECT 1 FROM user_starred_routes WHERE user_id = %s AND route_id = %s",
+            (user_id, route_id),
         )
+        is_starred = cursor.fetchone()
+        
+        if is_starred:
+            cursor.execute("DELETE FROM user_starred_routes WHERE user_id = %s AND route_id = %s",
+                (user_id, route_id),
+            )
+            action = "removed"
+        else:
+            cursor.execute(
+                "INSERT INTO user_starred_routes (user_id, route_id) VALUES (%s, %s)",
+                (user_id, route_id),
+            )
+            action = "added"
+
         cnx.commit()
-    return JSONResponse({"success": True})
+    return JSONResponse({"success": True, "action": action})
+
+@app.get("/starred/{username}")
+def get_starred_routes(username: str) -> JSONResponse:
+    with closing(cnx.cursor(dictionary=True)) as cursor:
+        cursor.execute("SELECT user_id FROM users WHERE username = %s", (username,))
+        user = cursor.fetchone()
+        if not user:
+            return JSONResponse({"success": False, "message": "User not found"}, status_code=404)
+
+        user_id = user["user_id"]
+
+        cursor.execute(
+            "SELECT r.route_id, r.route_no, r.origin, r.destination, r.distance, r.time "
+            "FROM routes r "
+            "JOIN user_starred_routes usr ON r.route_id = usr.route_id "
+            "WHERE usr.user_id = %s",
+            (user_id,),
+        )
+        starred_routes = cursor.fetchall()
+
+    return JSONResponse({"success": True, "starred_routes": starred_routes})

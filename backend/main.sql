@@ -1,3 +1,5 @@
+-- Active: 1726423656028@@127.0.0.1@3306@bmtc
+-- use this as a script 
 CREATE DATABASE bmtc;
 use bmtc;
 
@@ -68,3 +70,26 @@ JOIN
     routes r
 ON 
     u.user_id = r.route_id;
+
+
+CREATE TABLE user_starred_routes (
+    user_id INT NOT NULL,
+    route_id INT NOT NULL,
+    PRIMARY KEY (user_id, route_id),
+    FOREIGN Key (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (route_id) REFERENCES routes(route_id) ON DELETE CASCADE
+);
+
+DESC user_starred_routes;
+
+SELECT user_id FROM users
+WHERE username = 'mnc';
+
+SELECT * FROM user_starred_routes
+WHERE user_id = 1;
+
+SELECT u.username, r.route_no, r.origin, r.destination
+FROM users u
+JOIN user_starred_routes usr ON u.user_id = usr.user_id
+JOIN routes r ON r.route_id = usr.route_id
+ORDER BY u.username;

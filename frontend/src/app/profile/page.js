@@ -4,8 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Bus, MapPin, Clock } from 'lucide-react'
-import { UserCredentials } from '../../components/usercontext/UserCredentialsProvider'
+import { Bus } from 'lucide-react'
+import { UserCredentials } from '@/components/usercontext/UserCredentialsProvider'
 import { redirect } from 'next/navigation'
 
 export default function ProfilePage() {
