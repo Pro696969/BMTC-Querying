@@ -6,14 +6,45 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
 from dotenv import load_dotenv
+from mysql.connector import Error
+import time
 
 load_dotenv()
-extras = {} if (password := os.getenv("mysql_pass")) is None else {"password": password}
-cnx = mysql.connector.connect(
-    host="127.0.0.1", port=3306, user="root", database="bmtc", **extras
-)
-
 app = FastAPI()
+
+
+# extras = {} if (password := os.getenv("MYSQL_PASS")) is None else {"password": password}
+# cnx = mysql.connector.connect(
+#     host=os.getenv("MYSQL_HOST"),
+#     port=os.getenv("MYSQL_PORT"),
+#     user=os.getenv("MYSQL_USER"),
+#     database=os.getenv("MYSQL_DB"),
+#     **extras,
+# )
+
+# basically wait for db to get up and running completely before trying to connect to it
+def wait_for_db(max_retries=30, delay_seconds=2):
+    for attempt in range(max_retries):
+        try:
+            cnx = mysql.connector.connect(
+                host=os.getenv('MYSQL_HOST', 'db'),
+                user=os.getenv('MYSQL_USER', 'fastapi_user'),
+                password=os.getenv('MYSQL_PASSWORD', 'fastapi_password'),
+                database=os.getenv('MYSQL_DB', 'bmtc')
+            )
+            print("Successfully connected to the database!")
+            return cnx
+        except Error as err:
+            print(f"Attempt {attempt + 1}/{max_retries}: Database connection failed: {err}")
+            if attempt < max_retries - 1:
+                print(f"Retrying in {delay_seconds} seconds...")
+                time.sleep(delay_seconds)
+    raise Exception("Could not connect to the database after maximum retries")
+
+# Wait for database to be ready before starting the app
+cnx = wait_for_db()
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -22,15 +53,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class User(BaseModel):
     inputUsername: str
     password: str
     emailid: str
     bdate: str
 
+
 class Login_user(BaseModel):
     inputUsername: str
     password: str
+
 
 @app.post("/login")
 def login_user(creds: Login_user) -> JSONResponse:
@@ -55,6 +89,7 @@ def login_user(creds: Login_user) -> JSONResponse:
             {"logged": "0", "message": "Wrong Username or Password"}, status_code=401
         )
 
+
 @app.post("/signup")
 def signin_user(creds: User) -> JSONResponse:
     with closing(cnx.cursor()) as cursor:
@@ -65,6 +100,7 @@ def signin_user(creds: User) -> JSONResponse:
         cnx.commit()
 
     return JSONResponse({"signed": "1", "message": "Successfully registered"})
+
 
 @app.get("/profile")
 def age(username: str) -> JSONResponse:
@@ -85,12 +121,14 @@ def age(username: str) -> JSONResponse:
 
     return JSONResponse({"age": result["age"], "favourites": fav_routes})
 
+
 @app.delete("/profile")
 def delete_user(username: str) -> JSONResponse:
     with closing(cnx.cursor()) as cursor:
         cursor.execute(f'DELETE FROM users WHERE username = "{username}"')
         cnx.commit()
     return JSONResponse({"message": f"User '{username}' deleted successfully"})
+
 
 @app.get("/route/{category}/{query}")
 def get_route(category: str, query: str) -> JSONResponse:
@@ -115,23 +153,27 @@ def get_route(category: str, query: str) -> JSONResponse:
 
         return JSONResponse(list(map(serialize_row, cursor.fetchall())))
 
+
 @app.get("/star/{username}/{route_id}")
 def star_route(username: str, route_id: int) -> JSONResponse:
     with closing(cnx.cursor(dictionary=True)) as cursor:
-        cursor.execute("SELECT user_id FROM users WHERE username = %s", (username, ))
+        cursor.execute("SELECT user_id FROM users WHERE username = %s", (username,))
         user = cursor.fetchone()
         if not user:
-            return JSONResponse({"success": False, "message": "User not found"}, status_code=404)
+            return JSONResponse(
+                {"success": False, "message": "User not found"}, status_code=404
+            )
         user_id = user["user_id"]
-        
+
         cursor.execute(
             "SELECT 1 FROM user_starred_routes WHERE user_id = %s AND route_id = %s",
             (user_id, route_id),
         )
         is_starred = cursor.fetchone()
-        
+
         if is_starred:
-            cursor.execute("DELETE FROM user_starred_routes WHERE user_id = %s AND route_id = %s",
+            cursor.execute(
+                "DELETE FROM user_starred_routes WHERE user_id = %s AND route_id = %s",
                 (user_id, route_id),
             )
             action = "removed"
@@ -145,13 +187,16 @@ def star_route(username: str, route_id: int) -> JSONResponse:
         cnx.commit()
     return JSONResponse({"success": True, "action": action})
 
+
 @app.get("/starred/{username}")
 def get_starred_routes(username: str) -> JSONResponse:
     with closing(cnx.cursor(dictionary=True)) as cursor:
         cursor.execute("SELECT user_id FROM users WHERE username = %s", (username,))
         user = cursor.fetchone()
         if not user:
-            return JSONResponse({"success": False, "message": "User not found"}, status_code=404)
+            return JSONResponse(
+                {"success": False, "message": "User not found"}, status_code=404
+            )
 
         user_id = user["user_id"]
 
@@ -165,3 +210,4 @@ def get_starred_routes(username: str) -> JSONResponse:
         starred_routes = cursor.fetchall()
 
     return JSONResponse({"success": True, "starred_routes": starred_routes})
+
